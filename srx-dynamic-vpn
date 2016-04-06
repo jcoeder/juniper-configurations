@@ -1,0 +1,54 @@
+set access profile dyn-vpn-auth client justin firewall-user password "$9$12345678901112131415"
+set access profile dyn-vpn-auth client justin2 firewall-user password "$9$12345678901112131415"
+set access profile dyn-vpn-auth address-assignment pool dyn-vpn-pool
+set access address-assignment pool dyn-vpn-pool family inet network 172.31.0.0/16
+set access address-assignment pool dyn-vpn-pool family inet xauth-attributes primary-dns 172.31.10.21/32
+set access firewall-authentication web-authentication default-profile dyn-vpn-auth
+
+set security ike proposal dyn-vpn-ike-pro authentication-method pre-shared-keys
+set security ike proposal dyn-vpn-ike-pro dh-group group2
+set security ike proposal dyn-vpn-ike-pro authentication-algorithm sha1
+set security ike proposal dyn-vpn-ike-pro encryption-algorithm 3des-cbc
+set security ike proposal dyn-vpn-ike-pro lifetime-seconds 1200
+
+et security ike policy dyn-vpn-ike-pol mode aggressive
+set security ike policy dyn-vpn-ike-pol proposals dyn-vpn-ike-pro
+set security ike policy dyn-vpn-ike-pol pre-shared-key ascii-text "$9$123456789101112131415"
+
+set security ike gateway dyn-vpn-ike-gat ike-policy dyn-vpn-ike-pol
+set security ike gateway dyn-vpn-ike-gat dynamic hostname fw1.chewonice.net
+set security ike gateway dyn-vpn-ike-gat dynamic ike-user-type shared-ike-id
+set security ike gateway dyn-vpn-ike-gat external-interface ge-0/0/0.0
+set security ike gateway dyn-vpn-ike-gat xauth access-profile dyn-vpn-auth
+
+set security ipsec proposal dyn-vpn-ipsec-pro protocol esp
+set security ipsec proposal dyn-vpn-ipsec-pro authentication-algorithm hmac-sha1-96
+set security ipsec proposal dyn-vpn-ipsec-pro encryption-algorithm aes-256-cbc
+set security ipsec proposal dyn-vpn-ipsec-pro lifetime-seconds 3600
+
+set security ipsec policy dyn-vpn-ipsec-pol perfect-forward-secrecy keys group5
+set security ipsec policy dyn-vpn-ipsec-pol proposals dyn-vpn-ipsec-pro
+
+set security ipsec vpn dyn-vpn-ipsec-vpn ike gateway dyn-vpn-ike-gat
+set security ipsec vpn dyn-vpn-ipsec-vpn ike ipsec-policy dyn-vpn-ipsec-pol
+set security ipsec vpn dyn-vpn-ipsec-vpn establish-tunnels immediately
+
+set security dynamic-vpn access-profile dyn-vpn-auth
+
+set security dynamic-vpn clients all remote-protected-resources 172.31.10.0/24
+set security dynamic-vpn clients all remote-exceptions 0.0.0.0/0
+set security dynamic-vpn clients all ipsec-vpn dyn-vpn-ipsec-vpn
+set security dynamic-vpn clients all user justin
+set security dynamic-vpn clients all user justin1
+
+set security zones security-zone Internet interfaces ge-0/0/0.0 host-inbound-traffic system-services ping
+set security zones security-zone Internet interfaces ge-0/0/0.0 host-inbound-traffic system-services dhcp
+set security zones security-zone Internet interfaces ge-0/0/0.0 host-inbound-traffic system-services ntp
+set security zones security-zone Internet interfaces ge-0/0/0.0 host-inbound-traffic system-services https
+set security zones security-zone Internet interfaces ge-0/0/0.0 host-inbound-traffic system-services traceroute
+set security zones security-zone Internet interfaces ge-0/0/0.0 host-inbound-traffic system-services ike
+
+set security policies from-zone Internet to-zone Internal policy dyn-vpn match source-address any
+set security policies from-zone Internet to-zone Internal policy dyn-vpn match destination-address any
+set security policies from-zone Internet to-zone Internal policy dyn-vpn match application any
+set security policies from-zone Internet to-zone Internal policy dyn-vpn then permit tunnel ipsec-vpn dyn-vpn-ipsec-vpn
