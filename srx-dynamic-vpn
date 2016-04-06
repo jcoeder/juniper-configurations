@@ -39,7 +39,7 @@ set security dynamic-vpn clients all remote-protected-resources 172.31.10.0/24
 set security dynamic-vpn clients all remote-exceptions 0.0.0.0/0
 set security dynamic-vpn clients all ipsec-vpn dyn-vpn-ipsec-vpn
 set security dynamic-vpn clients all user justin
-set security dynamic-vpn clients all user justin1
+set security dynamic-vpn clients all user justin2
 
 set security zones security-zone Internet interfaces ge-0/0/0.0 host-inbound-traffic system-services ping
 set security zones security-zone Internet interfaces ge-0/0/0.0 host-inbound-traffic system-services dhcp
