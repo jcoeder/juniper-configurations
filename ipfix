@@ -1,0 +1,32 @@
+set chassis fpc 1 sampling-instance SAMPLING
+set chassis fpc 1 inline-services flow-table-size ipv4-flow-table-size 5
+set chassis fpc 1 inline-services flow-table-size ipv6-flow-table-size 5
+
+set services flow-monitoring version-ipfix template IPV4 flow-active-timeout 60
+set services flow-monitoring version-ipfix template IPV4 flow-inactive-timeout 60
+set services flow-monitoring version-ipfix template IPV4 template-refresh-rate packets 480000
+set services flow-monitoring version-ipfix template IPV4 template-refresh-rate seconds 60
+set services flow-monitoring version-ipfix template IPV4 option-refresh-rate packets 480000
+set services flow-monitoring version-ipfix template IPV4 option-refresh-rate seconds 60
+set services flow-monitoring version-ipfix template IPV4 ipv4-template
+set services flow-monitoring version-ipfix template IPV6 flow-active-timeout 60
+set services flow-monitoring version-ipfix template IPV6 flow-inactive-timeout 60
+set services flow-monitoring version-ipfix template IPV6 template-refresh-rate packets 480000
+set services flow-monitoring version-ipfix template IPV6 template-refresh-rate seconds 60
+set services flow-monitoring version-ipfix template IPV6 option-refresh-rate packets 480000
+set services flow-monitoring version-ipfix template IPV6 option-refresh-rate seconds 60
+set services flow-monitoring version-ipfix template IPV6 ipv6-template
+
+set forwarding-options sampling instance SAMPLING input rate 1
+set forwarding-options sampling instance SAMPLING family inet output flow-server 8.8.8.68 port 9995
+set forwarding-options sampling instance SAMPLING family inet output flow-server 8.8.8.68 version-ipfix template IPV4
+set forwarding-options sampling instance SAMPLING family inet output inline-jflow source-address 97.65.222.1
+set forwarding-options sampling instance SAMPLING family inet6 output flow-server 2000:ffff:0:8::4 port 9995
+set forwarding-options sampling instance SAMPLING family inet6 output flow-server 2000:ffff:0:8::4 version-ipfix template IPV6
+set forwarding-options sampling instance SAMPLING family inet6 output inline-jflow source-address 2602:ff41::1
+
+set interfaces xe-1/2/0 unit 0 family inet sampling input
+set interfaces xe-1/2/0 unit 0 family inet sampling output
+
+set interfaces xe-1/2/0 unit 0 family inet6 sampling input
+set interfaces xe-1/2/0 unit 0 family inet6 sampling output
