@@ -5,3 +5,6 @@ set chassis redundancy failover on-disk-failure
 set chassis redundancy graceful-switchover
 
 set routing-options nonstop-routing
+
+Justin Oeder
+http://beyondhosting.net
