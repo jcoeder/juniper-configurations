@@ -1,0 +1,7 @@
+set system commit synchronize           
+
+set chassis redundancy failover on-loss-of-keepalives
+set chassis redundancy failover on-disk-failure
+set chassis redundancy graceful-switchover
+
+set routing-options nonstop-routing
