@@ -1,0 +1,29 @@
+set interfaces lo0 unit 0 family inet filter input PROTECT_RE
+set interfaces lo0 unit 0 family inet6 filter input PROTECT_RE_V6
+
+set policy-options prefix-list BGP_PEERS_DYNAMIC apply-path "protocols bgp group <*> neighbor <*.*>"
+set policy-options prefix-list BGP_PEERS_DYNAMIC_V6 apply-path "protocols bgp group <*> neighbor <*:*>"
+
+set firewall family inet filter PROTECT_RE term ALLOW_BGP from source-prefix-list BGP_PEERS_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_BGP from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_BGP from destination-port bgp
+set firewall family inet filter PROTECT_RE term ALLOW_BGP then log
+set firewall family inet filter PROTECT_RE term ALLOW_BGP then accept
+set firewall family inet filter PROTECT_RE term BLOCK_BGP from protocol tcp
+set firewall family inet filter PROTECT_RE term BLOCK_BGP from destination-port bgp
+set firewall family inet filter PROTECT_RE term BLOCK_BGP then log
+set firewall family inet filter PROTECT_RE term BLOCK_BGP then discard
+set firewall family inet filter PROTECT_RE term DEFAULT then log
+set firewall family inet filter PROTECT_RE term DEFAULT then accept
+
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from source-prefix-list BGP_PEERS_DYNAMIC_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from payload-protocol tcp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from destination-port bgp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP then log
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP then accept
+set firewall family inet6 filter PROTECT_RE_V6 term BLOCK_BGP from payload-protocol tcp
+set firewall family inet6 filter PROTECT_RE_V6 term BLOCK_BGP from destination-port bgp
+set firewall family inet6 filter PROTECT_RE_V6 term BLOCK_BGP then log
+set firewall family inet6 filter PROTECT_RE_V6 term BLOCK_BGP then discard
+set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT then log
+set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT then accept
