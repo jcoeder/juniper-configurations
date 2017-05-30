@@ -52,3 +52,6 @@ set security policies from-zone Internet to-zone Internal policy dyn-vpn match s
 set security policies from-zone Internet to-zone Internal policy dyn-vpn match destination-address any
 set security policies from-zone Internet to-zone Internal policy dyn-vpn match application any
 set security policies from-zone Internet to-zone Internal policy dyn-vpn then permit tunnel ipsec-vpn dyn-vpn-ipsec-vpn
+
+Justin Oeder
+http://beyondhosting.net
