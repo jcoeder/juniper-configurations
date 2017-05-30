@@ -1,2 +1,5 @@
 set policy-options prefix-list BGP_PEERS_DYNAMIC apply-path "protocols bgp group <*> neighbor <*.*>"
 set policy-options prefix-list BGP_PEERS_DYNAMIC_V6 apply-path "protocols bgp group <*> neighbor <*:*>"
+
+Justin Oeder
+http://beyondhosting.net
