@@ -1,0 +1,43 @@
+#Probing Interface
+set interfaces ge-1/1/0 unit 0 family inet filter input IRP_FBF
+set interfaces ge-1/1/0 unit 0 family inet address 97.8.8.66/28 vrrp-group 0 virtual-address 97.8.8.65
+set interfaces ge-1/1/0 unit 0 family inet address 97.8.8.66/28 vrrp-group 0 priority 150
+set interfaces ge-1/1/0 unit 0 family inet address 97.8.8.66/28 vrrp-group 0 preempt
+set interfaces ge-1/1/0 unit 0 family inet address 97.8.8.66/28 vrrp-group 0 accept-data
+set interfaces ge-1/1/0 unit 0 family inet address 97.8.8.66/28 vrrp-group 0 authentication-type md5
+set interfaces ge-1/1/0 unit 0 family inet address 97.8.8.66/28 vrrp-group 0 authentication-key "$9$1234556789876543"
+set interfaces ge-1/1/0 unit 0 family inet6 filter input IRP_FBF_V6
+set interfaces ge-1/1/0 unit 0 family inet6 address 2700:ffff:0:8::2/64 vrrp-inet6-group 0 virtual-inet6-address 2700:ffff:0:8::1
+set interfaces ge-1/1/0 unit 0 family inet6 address 2700:ffff:0:8::2/64 vrrp-inet6-group 0 virtual-link-local-address fe80::1
+set interfaces ge-1/1/0 unit 0 family inet6 address 2700:ffff:0:8::2/64 vrrp-inet6-group 0 priority 150
+set interfaces ge-1/1/0 unit 0 family inet6 address 2700:ffff:0:8::2/64 vrrp-inet6-group 0 preempt
+set interfaces ge-1/1/0 unit 0 family inet6 address 2700:ffff:0:8::2/64 vrrp-inet6-group 0 accept-data
+
+#Transit Interface
+set interfaces xe-1/2/0 unit 0 description "UPLINK TO LEVEL 3 CID 5P/KGFN/002560/LVLC"
+set interfaces xe-1/2/0 unit 0 family inet sampling input
+set interfaces xe-1/2/0 unit 0 family inet sampling output
+set interfaces xe-1/2/0 unit 0 family inet address 69.9.9.26/30
+set interfaces xe-1/2/0 unit 0 family inet6 sampling input
+set interfaces xe-1/2/0 unit 0 family inet6 sampling output
+set interfaces xe-1/2/0 unit 0 family inet6 address 2001:0000:0000:8::2/64
+
+#Import RIB Groups
+set routing-options rib-groups IRP_POLICIES import-rib inet.0
+set routing-options rib-groups IRP_POLICIES import-rib IRP_LEVEL3_1.inet.0
+set routing-options rib-groups IRP_POLICIES_V6 import-rib inet6.0
+set routing-options rib-groups IRP_POLICIES_V6 import-rib IRP_LEVEL3_1.inet6.0
+
+#Routing Instance
+set routing-instances IRP_LEVEL3_1 instance-type forwarding
+set routing-instances IRP_LEVEL3_1 routing-options rib IRP_LEVEL3_1.inet6.0 static route ::/0 next-hop 2001:0000:0000:8::1
+set routing-instances IRP_LEVEL3_1 routing-options static route 0.0.0.0/0 next-hop 69.9.9.25
+
+#Filter Based Forwarding Rules
+set firewall family inet filter IRP_FBF term 1 from source-address 97.8.8.69/32
+set firewall family inet filter IRP_FBF term 1 then routing-instance IRP_LEVEL3_1
+set firewall family inet filter IRP_FBF term default then accept
+
+set firewall family inet6 filter IRP_FBF_V6 term 1 from source-address 2700:ffff:0:8::5/128
+set firewall family inet6 filter IRP_FBF_V6 term 1 then routing-instance IRP_LEVEL3_1
+set firewall family inet6 filter IRP_FBF_V6 term default then accept
