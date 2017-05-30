@@ -1,0 +1,12 @@
+set groups re0 interfaces fxp0 unit 0 family inet address 172.16.216.30/24 master-only
+set groups re0 interfaces fxp0 unit 0 family inet address 172.16.216.31/24
+set groups re0 interfaces fxp0 unit 0 family inet6 address 2000:ffff:2::30/64 master-only
+set groups re0 interfaces fxp0 unit 0 family inet6 address 2000:ffff:2::31/64
+
+set groups re1 interfaces fxp0 unit 0 family inet address 172.16.216.30/24 master-only
+set groups re1 interfaces fxp0 unit 0 family inet address 172.16.216.32/24
+set groups re1 interfaces fxp0 unit 0 family inet6 address 2000:ffff:2::30/64 master-only
+set groups re1 interfaces fxp0 unit 0 family inet6 address 2000:ffff:2::32/64
+
+set apply-groups re0
+set apply-groups re1
