@@ -1,3 +1,5 @@
+#This is all the configuration needed to enable IPFIX on a Juniper MX router.  This should be configured during a window as setting or adjusting the flow-table size will restart the forwarding plane of the router.
+
 set chassis fpc 1 sampling-instance SAMPLING
 set chassis fpc 1 inline-services flow-table-size ipv4-flow-table-size 5
 set chassis fpc 1 inline-services flow-table-size ipv6-flow-table-size 5
@@ -30,3 +32,7 @@ set interfaces xe-1/2/0 unit 0 family inet sampling output
 
 set interfaces xe-1/2/0 unit 0 family inet6 sampling input
 set interfaces xe-1/2/0 unit 0 family inet6 sampling output
+
+Justin Oeder
+http://beyondhosting.net
+Managed Public Cloud Provider
