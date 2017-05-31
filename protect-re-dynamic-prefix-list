@@ -29,5 +29,5 @@ set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT then log
 set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT then accept
 
 Justin Oeder
-http://beyondhosting
+http://beyondhosting.net
 Managed Public Cloud Provider
