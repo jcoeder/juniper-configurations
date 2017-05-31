@@ -27,3 +27,7 @@ set firewall family inet6 filter PROTECT_RE_V6 term BLOCK_BGP then log
 set firewall family inet6 filter PROTECT_RE_V6 term BLOCK_BGP then discard
 set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT then log
 set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT then accept
+
+Justin Oeder
+http://beyondhosting
+Managed Public Cloud Provider
