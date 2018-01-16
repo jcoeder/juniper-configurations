@@ -1,0 +1,7 @@
+enable nested virt
+disable apicv
+
+cpu - copy host cpu configuration
+disk - ide
+nic - virtio
+serial - tcp + telnet
