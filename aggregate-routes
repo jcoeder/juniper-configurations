@@ -1,0 +1,10 @@
+#Policy prevents BGP from generating an aggregate route.  Useful for annouuncing a smaller subnet from a different ASN.
+set policy-options policy-statement aggregate-from-direct-static-ospf from protocol direct
+set policy-options policy-statement aggregate-from-direct-static-ospf from protocol static
+set policy-options policy-statement aggregate-from-direct-static-ospf from protocol ospf
+set policy-options policy-statement aggregate-from-direct-static-ospf from protocol ospf3
+set policy-options policy-statement aggregate-from-direct-static-ospf then accept
+
+set routing-options aggregate route 209.0.0.0/20 community 30152:30152
+set routing-options aggregate route 209.0.144.0/20 discard
+set routing-options aggregate route 209.0..0.0/20 policy aggregate-from-direct-static-ospf
