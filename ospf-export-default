@@ -1,0 +1,14 @@
+set protocols ospf external-preference 175
+set protocols ospf export default-originate
+set protocols ospf reference-bandwidth 100g
+
+set protocols ospf3 external-preference 175
+set protocols ospf3 export default-originate
+set protocols ospf3 reference-bandwidth 100g
+
+set policy-options policy-statement default-originate term 1 from family inet
+set policy-options policy-statement default-originate term 1 from route-filter 0.0.0.0/0 exact
+set policy-options policy-statement default-originate term 1 then accept
+set policy-options policy-statement default-originate term 2 from family inet6
+set policy-options policy-statement default-originate term 2 from route-filter ::/0 exact
+set policy-options policy-statement default-originate term 2 then accept
