@@ -50,9 +50,26 @@ After Upgrade to Junos 15.1
 -If doing a non back to back MC LAG Aggregated Ethernet to a downstream Host then enable Spanning Tree on the Link
 
 
+Caveats and things to know
+The ICL link does not learn MAC addresses on it
+ARP replies are dropped on the ICL links, that is why the static ARP entry on the IRB interface is needed
+BPDU Block recovery under layer2 protocols will not auto re enable a port that was BPDU Block disabled BEFORE you turn on bpdu disable timeout
+Verification Commands
+-some useful commands to verify status of ICCP, ICL and MC AE interfaces
+
+show iccp
+
+show interfaces mc-ae
+
+show bfd session
+
+show vrrp brief      (on spines or units with IRB/Layer 3 interfaces)
+
+clear error bpdu interface [ all | interface ]       (for manually clearing BPDU block on a port)
 
 
 
+#GENERAL CONFIGURATION
 #BETTER ISCSI LOAD BALACING
 set forwarding-options enhanced-hash-key hash-mode layer2-payload
 set forwarding-options enhanced-hash-key inet no-l4-destination-port
@@ -79,6 +96,8 @@ set protocols iccp peer 169.254.0.2 session-establishment-hold-time 50
 set protocols iccp peer 169.254.0.2 backup-liveness-detection backup-peer-ip 172.16.214.18
 set protocols iccp peer 169.254.0.2 liveness-detection minimum-interval 500
 set protocols iccp peer 169.254.0.2 liveness-detection multiplier 3
+
+set interfaces em0 unit 0 family inet address 172.16.214.17/24
 
 set switch-options service-id 1
 
@@ -120,9 +139,11 @@ set interfaces irb unit 10 family inet address 10.0.10.2/24 vrrp-group 10 accept
 #SWITCH2
 set protocols iccp local-ip-addr 169.254.0.1
 set protocols iccp peer 169.254.0.2 session-establishment-hold-time 50
-set protocols iccp peer 169.254.0.2 backup-liveness-detection backup-peer-ip 172.16.214.18
+set protocols iccp peer 169.254.0.2 backup-liveness-detection backup-peer-ip 172.16.214.17
 set protocols iccp peer 169.254.0.2 liveness-detection minimum-interval 500
 set protocols iccp peer 169.254.0.2 liveness-detection multiplier 3
+
+set interfaces em0 unit 0 family inet address 172.16.214.18/24
 
 set switch-options service-id 1
 
@@ -158,3 +179,136 @@ set interfaces irb unit 10 family inet address 10.0.10.3/24 arp 10.0.10.2 mac d0
 set interfaces irb unit 10 family inet address 10.0.10.3/24 vrrp-group 10 virtual-address 10.0.10.1
 set interfaces irb unit 10 family inet address 10.0.10.3/24 vrrp-group 10 preempt
 set interfaces irb unit 10 family inet address 10.0.10.3/24 vrrp-group 10 accept-data
+
+#SWITCH3
+set interfaces ae0 description ICCP-LACP-LAG
+set interfaces ae0 mtu 9216
+set interfaces ae0 aggregated-ether-options lacp active
+set interfaces ae0 aggregated-ether-options lacp periodic fast
+set interfaces ae0 unit 0 family inet address 169.254.0.5/30
+
+set interfaces ae1 description ICL-LACP-LAG
+set interfaces ae1 mtu 9216
+set interfaces ae1 aggregated-ether-options lacp active
+set interfaces ae1 aggregated-ether-options lacp periodic fast
+set interfaces ae1 unit 0 family ethernet-switching interface-mode trunk
+set interfaces ae1 unit 0 family ethernet-switching vlan members all
+set interfaces ae1 unit 0 family ethernet-switching storm-control uplinks
+set interfaces ae1 unit 0 family ethernet-switching recovery-timeout 10
+
+set interfaces em0 unit 0 family inet address 172.16.214.26/24
+
+set interfaces xe-0/0/0 description MC-LAG-TO-SPINE
+set interfaces xe-0/0/0 ether-options 802.3ad ae2
+set interfaces xe-0/0/1 description MC-LAG-TO-SPINE
+set interfaces xe-0/0/1 ether-options 802.3ad ae2
+
+set interfaces xe-0/0/44 description ICCP-LACP-MEMBER
+set interfaces xe-0/0/44 ether-options 802.3ad ae0
+set interfaces xe-0/0/45 description ICCP-LACP-MEMBER
+set interfaces xe-0/0/45 ether-options 802.3ad ae0
+set interfaces xe-0/0/46 description ICL-LACP-MEMBER
+set interfaces xe-0/0/46 ether-options 802.3ad ae1
+set interfaces xe-0/0/47 description ICL-LACP-MEMBER
+set interfaces xe-0/0/47 ether-options 802.3ad ae1
+
+set protocols iccp local-ip-addr 169.254.0.5
+set protocols iccp peer 169.254.0.6 session-establishment-hold-time 50
+set protocols iccp peer 169.254.0.6 backup-liveness-detection backup-peer-ip 172.16.214.27
+set protocols iccp peer 169.254.0.6 liveness-detection minimum-interval 500
+set protocols iccp peer 169.254.0.6 liveness-detection multiplier 3
+
+set switch-options service-id 2
+
+set protocols rstp bridge-priority 32k
+set protocols rstp system-identifier 00:00:00:12:12:12
+set protocols rstp interface xe-0/0/2 edge
+set protocols rstp interface xe-0/0/3 edge
+...
+set protocols rstp bpdu-block-on-edge
+
+set interfaces ae2 description MC-LAG-TO-SPINE
+set interfaces ae2 mtu 9216
+set interfaces ae2 aggregated-ether-options lacp active
+set interfaces ae2 aggregated-ether-options lacp periodic fast
+set interfaces ae2 aggregated-ether-options lacp system-id 00:00:00:00:12:02
+set interfaces ae2 aggregated-ether-options lacp admin-key 122
+set interfaces ae2 aggregated-ether-options mc-ae mc-ae-id 2
+set interfaces ae2 aggregated-ether-options mc-ae chassis-id 0
+set interfaces ae2 aggregated-ether-options mc-ae mode active-active
+set interfaces ae2 aggregated-ether-options mc-ae status-control active
+set interfaces ae2 aggregated-ether-options mc-ae init-delay-time 120
+set interfaces ae2 aggregated-ether-options mc-ae events iccp-peer-down force-icl-down
+set interfaces ae2 aggregated-ether-options mc-ae events iccp-peer-down prefer-status-control-active
+set interfaces ae2 unit 0 family ethernet-switching interface-mode trunk
+set interfaces ae2 unit 0 family ethernet-switching vlan members all
+set interfaces ae2 unit 0 family ethernet-switching storm-control uplinks
+set interfaces ae2 unit 0 family ethernet-switching recovery-timeout 10
+
+set protocols layer2-control bpdu-block disable-timeout 10
+
+#SWITCH4
+set interfaces ae0 description ICCP-LACP-LAG
+set interfaces ae0 mtu 9216
+set interfaces ae0 aggregated-ether-options lacp active
+set interfaces ae0 aggregated-ether-options lacp periodic fast
+set interfaces ae0 unit 0 family inet address 169.254.0.6/30
+
+set interfaces ae1 description ICL-LACP-LAG
+set interfaces ae1 mtu 9216
+set interfaces ae1 aggregated-ether-options lacp active
+set interfaces ae1 aggregated-ether-options lacp periodic fast
+set interfaces ae1 unit 0 family ethernet-switching interface-mode trunk
+set interfaces ae1 unit 0 family ethernet-switching vlan members all
+set interfaces ae1 unit 0 family ethernet-switching storm-control uplinks
+set interfaces ae1 unit 0 family ethernet-switching recovery-timeout 10
+
+set interfaces em0 unit 0 family inet address 172.16.214.27/24
+
+set interfaces xe-0/0/0 description MC-LAG-TO-SPINE
+set interfaces xe-0/0/0 ether-options 802.3ad ae2
+set interfaces xe-0/0/1 description MC-LAG-TO-SPINE
+set interfaces xe-0/0/1 ether-options 802.3ad ae2
+
+set interfaces xe-0/0/44 description ICCP-LACP-MEMBER
+set interfaces xe-0/0/44 ether-options 802.3ad ae0
+set interfaces xe-0/0/45 description ICCP-LACP-MEMBER
+set interfaces xe-0/0/45 ether-options 802.3ad ae0
+set interfaces xe-0/0/46 description ICL-LACP-MEMBER
+set interfaces xe-0/0/46 ether-options 802.3ad ae1
+set interfaces xe-0/0/47 description ICL-LACP-MEMBER
+set interfaces xe-0/0/47 ether-options 802.3ad ae1
+
+set protocols iccp local-ip-addr 169.254.0.6
+set protocols iccp peer 169.254.0.5 session-establishment-hold-time 50
+set protocols iccp peer 169.254.0.5 backup-liveness-detection backup-peer-ip 172.16.214.26
+set protocols iccp peer 169.254.0.5 liveness-detection minimum-interval 500
+set protocols iccp peer 169.254.0.5 liveness-detection multiplier 3
+
+set switch-options service-id 2
+
+set protocols rstp bridge-priority 32k
+set protocols rstp system-identifier 00:00:00:12:12:12
+set protocols rstp interface xe-0/0/2 edge
+set protocols rstp interface xe-0/0/3 edge
+...
+set protocols rstp bpdu-block-on-edge
+
+set interfaces ae2 description MC-LAG-TO-SPINE
+set interfaces ae2 mtu 9216
+set interfaces ae2 aggregated-ether-options lacp active
+set interfaces ae2 aggregated-ether-options lacp periodic fast
+set interfaces ae2 aggregated-ether-options lacp system-id 00:00:00:00:12:02
+set interfaces ae2 aggregated-ether-options lacp admin-key 122
+set interfaces ae2 aggregated-ether-options mc-ae mc-ae-id 2
+set interfaces ae2 aggregated-ether-options mc-ae chassis-id 1
+set interfaces ae2 aggregated-ether-options mc-ae mode active-active
+set interfaces ae2 aggregated-ether-options mc-ae status-control standby
+set interfaces ae2 aggregated-ether-options mc-ae init-delay-time 120
+set interfaces ae2 aggregated-ether-options mc-ae events iccp-peer-down force-icl-down
+set interfaces ae2 unit 0 family ethernet-switching interface-mode trunk
+set interfaces ae2 unit 0 family ethernet-switching vlan members all
+set interfaces ae2 unit 0 family ethernet-switching storm-control uplinks
+set interfaces ae2 unit 0 family ethernet-switching recovery-timeout 10
+
+set protocols layer2-control bpdu-block disable-timeout 10
