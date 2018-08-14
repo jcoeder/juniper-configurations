@@ -75,29 +75,39 @@ set forwarding-options enhanced-hash-key hash-mode layer2-payload
 set forwarding-options enhanced-hash-key inet no-l4-destination-port
 set forwarding-options enhanced-hash-key inet vlan-id
 
-#ICCP
+#SWITCH1
 set interfaces ae0 description ICCP-LACP-LAG
 set interfaces ae0 aggregated-ether-options lacp active
 set interfaces ae0 aggregated-ether-options lacp periodic fast
 set interfaces ae0 unit 0 family inet address 169.254.0.1/30
 
-#ICL
 set interfaces ae1 description ICL-LACP-LAG
 set interfaces ae1 aggregated-ether-options lacp active
 set interfaces ae1 aggregated-ether-options lacp periodic fast
 set interfaces ae1 unit 0 family ethernet-switching interface-mode trunk
 set interfaces ae1 unit 0 family ethernet-switching vlan members all
 
+set interfaces em0 unit 0 family inet address 172.16.214.17/24
 
+set interfaces xe-0/0/0 description MC-LAG-TO-LEAF1-AND-LEAF2
+set interfaces xe-0/0/0 ether-options 802.3ad ae2
+set interfaces xe-0/0/1 description MC-LAG-TO-LEAF1-AND-LEAF2
+set interfaces xe-0/0/1 ether-options 802.3ad ae2
 
-#SWITCH1
+set interfaces xe-0/0/44 description ICCP-LACP-MEMBER
+set interfaces xe-0/0/44 ether-options 802.3ad ae0
+set interfaces xe-0/0/45 description ICCP-LACP-MEMBER
+set interfaces xe-0/0/45 ether-options 802.3ad ae0
+set interfaces xe-0/0/46 description ICL-LACP-MEMBER
+set interfaces xe-0/0/46 ether-options 802.3ad ae1
+set interfaces xe-0/0/47 description ICL-LACP-MEMBER
+set interfaces xe-0/0/47 ether-options 802.3ad ae1
+
 set protocols iccp local-ip-addr 169.254.0.1
 set protocols iccp peer 169.254.0.2 session-establishment-hold-time 50
 set protocols iccp peer 169.254.0.2 backup-liveness-detection backup-peer-ip 172.16.214.18
 set protocols iccp peer 169.254.0.2 liveness-detection minimum-interval 500
 set protocols iccp peer 169.254.0.2 liveness-detection multiplier 3
-
-set interfaces em0 unit 0 family inet address 172.16.214.17/24
 
 set switch-options service-id 1
 
@@ -137,13 +147,38 @@ set interfaces irb unit 10 family inet address 10.0.10.2/24 vrrp-group 10 preemp
 set interfaces irb unit 10 family inet address 10.0.10.2/24 vrrp-group 10 accept-data
 
 #SWITCH2
-set protocols iccp local-ip-addr 169.254.0.1
-set protocols iccp peer 169.254.0.2 session-establishment-hold-time 50
-set protocols iccp peer 169.254.0.2 backup-liveness-detection backup-peer-ip 172.16.214.17
-set protocols iccp peer 169.254.0.2 liveness-detection minimum-interval 500
-set protocols iccp peer 169.254.0.2 liveness-detection multiplier 3
+set interfaces ae0 description ICCP-LACP-LAG
+set interfaces ae0 aggregated-ether-options lacp active
+set interfaces ae0 aggregated-ether-options lacp periodic fast
+set interfaces ae0 unit 0 family inet address 169.254.0.2/30
+
+set interfaces ae1 description ICL-LACP-LAG
+set interfaces ae1 aggregated-ether-options lacp active
+set interfaces ae1 aggregated-ether-options lacp periodic fast
+set interfaces ae1 unit 0 family ethernet-switching interface-mode trunk
+set interfaces ae1 unit 0 family ethernet-switching vlan members all
 
 set interfaces em0 unit 0 family inet address 172.16.214.18/24
+
+set interfaces xe-0/0/0 description MC-LAG-TO-LEAF1-AND-LEAF2
+set interfaces xe-0/0/0 ether-options 802.3ad ae2
+set interfaces xe-0/0/1 description MC-LAG-TO-LEAF1-AND-LEAF2
+set interfaces xe-0/0/1 ether-options 802.3ad ae2
+
+set interfaces xe-0/0/44 description ICCP-LACP-MEMBER
+set interfaces xe-0/0/44 ether-options 802.3ad ae0
+set interfaces xe-0/0/45 description ICCP-LACP-MEMBER
+set interfaces xe-0/0/45 ether-options 802.3ad ae0
+set interfaces xe-0/0/46 description ICL-LACP-MEMBER
+set interfaces xe-0/0/46 ether-options 802.3ad ae1
+set interfaces xe-0/0/47 description ICL-LACP-MEMBER
+set interfaces xe-0/0/47 ether-options 802.3ad ae1
+
+set protocols iccp local-ip-addr 169.254.0.1
+set protocols iccp peer 169.254.0.2 session-establishment-hold-time 50
+set protocols iccp peer 169.254.0.2 backup-liveness-detection backup-peer-ip 172.16.214.18
+set protocols iccp peer 169.254.0.2 liveness-detection minimum-interval 500
+set protocols iccp peer 169.254.0.2 liveness-detection multiplier 3
 
 set switch-options service-id 1
 
