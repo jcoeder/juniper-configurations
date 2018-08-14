@@ -1,0 +1,160 @@
+Junos 14.1 Woes
+-Our initial config began on Junos 14.1X53-D45.  We experienced issues with MC-LAG peers being able to reach each other via ICMP and other MC-LAG clients in a back to back MC-LAG configuration.
+
+-On Junos 14.1X53-D45 the static ARP entries pointing across the ICL links would vanish or become not used after any reboot or change of the ICCP/ICL links.
+
+-On 14.1 we tried using the commands arp-l2-validate under the IRB interface config which validates the MAC and ARP table of an MC-LAG peer using ICCP keep their tables in sync. The peers do this by default but in Extreme circumstances they can become out of sync the command says. However this did not fix the issue on 14.1 and also per Junos doc we found is not recommended to use this command in production with a large amount of traffic as it can affect performance.  See the image below taken from a Junos doc on MC-LAG at https://goo.gl/qnwUXo
+
+-On 14.1 we also tried using the VLAN level config command mcae-mac-synchronize to force MAC sync across the MC-LAG peers, this did not resolve the issue either.  The doc that has the command in it for the config is at https://goo.gl/kApNuS
+
+-On 14.1 adding the same ARP entry into the config would get the hosts able to resolve the peer address temporarily but it was unstable.
+
+
+After Upgrade to Junos 15.1
+-After the update to 15.1.R6.7 most of our issues with the ARP were resolved, we removed mcae-mac-synchronize and arp-l2-validate
+
+-If doing VRRP do not enable mcae-mac-synchronize
+
+-VRRP on the IRB interfaces was required to run in order to get the peers able to reach one another reliably and be reached from other testing MC-LAG peers reliably
+
+-Initially the ICCP BFD timers were set too aggressively at 60ms with a hold count of 3 causing ICCP peer lost messages.  Bumping these to 500ms and a hold count of 3 smoothed this out to a very reliable level of operation.
+
+-backup-liveness-detection was configured to poll the MC-LAG peer on the OOB management interface.  This does not send ICCP messages but will check to see if the peer is alive if the ICCP link is down or if the peer suffered a catastrophic event or power failure.  This helps the MC-LAG peers to determine what state to take in the event of an ICCP loss.
+
+-Under switch-options a service-id is set on each MC-LAG pair that matches among the pair but is unique outside their local group.
+
+-The Aggregated Ethernet interfaces that are not part of the ICCP LAG or the ICL LAG have a number of options set for Multichassis Aggregated Ethernet (MCLAG).  The LACP system ID needs to match for each MC LAG pair, if doing a back to back MC LAG one pair will share a system ID (for example 00:00:00:11:11:11) and the other MC LAG in the back to back setup will share a different system ID (for example 00:00:00:22:22:22)
+
+-The LACP admin key must match for the MC LAG pair, if doing back to back MC LAG the second pair needs to share a different admin key.  (for example MC LAG pair 1 has an LACP admin key of 1 and MC LAG pair 2 has an LACP admin key of 2)
+
+-The Chassis ID on each unit in the pair needs to be different, it can be a 0 or a 1 so make one peer 0 and the other 1
+
+-Set the MC AE mode to active-active also set one peer to status control active and the other unit to status control standby
+
+-Set the spanning tree system ID to be identical with the same priority on each peer in the MC LAG pair but ensure the system ID is different than other MC LAG pairs is doing back to back MC LAG
+
+-Disable Spanning Tree on the ICL link otherwise STP could block this link
+
+-With Spanning Tree disabled on the MC AE interfaces, enable STP on each host facing interface and storm control on uplink ports as well as host facing ports.  A good practice is to enable each host facing port that SHOULD NOT be sending BPDUs with STP enabled, set as an edge port and enable bpdu block to shutdown the link if a BPDU comes in.   Also set the protocols layer2-control to recover from BPDU block every 10 seconds. 
+
+-Make sure the MC AE ID matches on each peer, to keep things simple on both MC LAG pairs this was set to the Aggregated Ethernet interface number (for example ae2 was mc ae id 2)
+
+-The command set interfaces ae2 aggregated-ether-options mc-ae events iccp-peer-down prefer-status-control-active should ONLY be set on the active configured unit and not the standby.  This will ensure if ICCP goes down this host will prefer and become the active unit, this should force the standby unit to change the LACP system ID on the ports in the MC LAG to hosts disabling the ports downstream to prevent split brain and loops.
+
+-The command set interfaces ae2 aggregated-ether-options mc-ae events iccp-peer-down force-icl-down will shut down the ICL link if ICCP goes down, this will essentially bring the secondary peer down if backup liveness detection is working and ICCP is down
+
+-The configuration for the Spine1 and Spine2 unit along with Leaf1 and Leaf2 are shown below to show how a back to back MC LAG setup was configured
+
+-In a back to back MC LAG Spanning Tree on the MC LAG Aggregated Ethernet interfaces leads to some interesting results, disable STP on the MC AE interfaces in this instance
+
+-If doing a non back to back MC LAG Aggregated Ethernet to a downstream Host then enable Spanning Tree on the Link
+
+
+
+
+
+#BETTER ISCSI LOAD BALACING
+set forwarding-options enhanced-hash-key hash-mode layer2-payload
+set forwarding-options enhanced-hash-key inet no-l4-destination-port
+set forwarding-options enhanced-hash-key inet vlan-id
+
+#ICCP
+set interfaces ae0 description ICCP-LACP-LAG
+set interfaces ae0 aggregated-ether-options lacp active
+set interfaces ae0 aggregated-ether-options lacp periodic fast
+set interfaces ae0 unit 0 family inet address 169.254.0.1/30
+
+#ICL
+set interfaces ae1 description ICL-LACP-LAG
+set interfaces ae1 aggregated-ether-options lacp active
+set interfaces ae1 aggregated-ether-options lacp periodic fast
+set interfaces ae1 unit 0 family ethernet-switching interface-mode trunk
+set interfaces ae1 unit 0 family ethernet-switching vlan members all
+
+
+
+#SWITCH1
+set protocols iccp local-ip-addr 169.254.0.1
+set protocols iccp peer 169.254.0.2 session-establishment-hold-time 50
+set protocols iccp peer 169.254.0.2 backup-liveness-detection backup-peer-ip 172.16.214.18
+set protocols iccp peer 169.254.0.2 liveness-detection minimum-interval 500
+set protocols iccp peer 169.254.0.2 liveness-detection multiplier 3
+
+set switch-options service-id 1
+
+set protocols rstp bridge-priority 4k
+set protocols rstp system-identifier 00:00:00:11:11:11
+
+set interfaces ae2 description MC-LAG-TO-LEAF1-AND-LEAF2
+set interfaces ae2 mtu 9216
+set interfaces ae2 aggregated-ether-options lacp active
+set interfaces ae2 aggregated-ether-options lacp periodic fast
+set interfaces ae2 aggregated-ether-options lacp system-id 00:00:00:00:00:02
+set interfaces ae2 aggregated-ether-options lacp admin-key 2
+set interfaces ae2 aggregated-ether-options mc-ae mc-ae-id 2
+set interfaces ae2 aggregated-ether-options mc-ae chassis-id 0
+set interfaces ae2 aggregated-ether-options mc-ae mode active-active
+set interfaces ae2 aggregated-ether-options mc-ae status-control active
+set interfaces ae2 aggregated-ether-options mc-ae init-delay-time 120
+set interfaces ae2 aggregated-ether-options mc-ae events iccp-peer-down force-icl-down
+set interfaces ae2 aggregated-ether-options mc-ae events iccp-peer-down prefer-status-control-active
+set interfaces ae2 unit 0 family ethernet-switching interface-mode trunk
+set interfaces ae2 unit 0 family ethernet-switching vlan members all
+set interfaces ae2 unit 0 family ethernet-switching storm-control uplinks
+set interfaces ae2 unit 0 family ethernet-switching recovery-timeout 10
+
+set vlans default vlan-id 1
+set vlans default l3-interface irb.0
+set vlans vlan10-test vlan-id 10
+set vlans vlan10-test l3-interface irb.10
+
+set interfaces irb unit 0
+set interfaces irb unit 10 family inet no-redirects
+set interfaces irb unit 10 family inet address 10.0.10.2/24 arp 10.0.10.3 l2-interface ae1.0
+set interfaces irb unit 10 family inet address 10.0.10.2/24 arp 10.0.10.3 mac d0:07:ca:5f:af:20
+set interfaces irb unit 10 family inet address 10.0.10.2/24 vrrp-group 10 virtual-address 10.0.10.1
+set interfaces irb unit 10 family inet address 10.0.10.2/24 vrrp-group 10 priority 50
+set interfaces irb unit 10 family inet address 10.0.10.2/24 vrrp-group 10 preempt
+set interfaces irb unit 10 family inet address 10.0.10.2/24 vrrp-group 10 accept-data
+
+#SWITCH2
+set protocols iccp local-ip-addr 169.254.0.1
+set protocols iccp peer 169.254.0.2 session-establishment-hold-time 50
+set protocols iccp peer 169.254.0.2 backup-liveness-detection backup-peer-ip 172.16.214.18
+set protocols iccp peer 169.254.0.2 liveness-detection minimum-interval 500
+set protocols iccp peer 169.254.0.2 liveness-detection multiplier 3
+
+set switch-options service-id 1
+
+set protocols rstp bridge-priority 4k
+set protocols rstp system-identifier 00:00:00:11:11:11
+
+set interfaces ae2 description MC-LAG-TO-LEAF1-AND-LEAF2
+set interfaces ae2 mtu 9216
+set interfaces ae2 aggregated-ether-options lacp active
+set interfaces ae2 aggregated-ether-options lacp periodic fast
+set interfaces ae2 aggregated-ether-options lacp system-id 00:00:00:00:00:02
+set interfaces ae2 aggregated-ether-options lacp admin-key 2
+set interfaces ae2 aggregated-ether-options mc-ae mc-ae-id 2
+set interfaces ae2 aggregated-ether-options mc-ae chassis-id 1
+set interfaces ae2 aggregated-ether-options mc-ae mode active-active
+set interfaces ae2 aggregated-ether-options mc-ae status-control standby
+set interfaces ae2 aggregated-ether-options mc-ae init-delay-time 120
+set interfaces ae2 aggregated-ether-options mc-ae events iccp-peer-down force-icl-down
+set interfaces ae2 unit 0 family ethernet-switching interface-mode trunk
+set interfaces ae2 unit 0 family ethernet-switching vlan members all
+set interfaces ae2 unit 0 family ethernet-switching storm-control uplinks
+set interfaces ae2 unit 0 family ethernet-switching recovery-timeout 10
+
+set vlans default vlan-id 1
+set vlans default l3-interface irb.0
+set vlans vlan10-test vlan-id 10
+set vlans vlan10-test l3-interface irb.10
+
+set interfaces irb unit 0
+set interfaces irb unit 10 family inet no-redirects
+set interfaces irb unit 10 family inet address 10.0.10.3/24 arp 10.0.10.2 l2-interface ae1.0
+set interfaces irb unit 10 family inet address 10.0.10.3/24 arp 10.0.10.2 mac d0:07:ca:5f:37:20
+set interfaces irb unit 10 family inet address 10.0.10.3/24 vrrp-group 10 virtual-address 10.0.10.1
+set interfaces irb unit 10 family inet address 10.0.10.3/24 vrrp-group 10 preempt
+set interfaces irb unit 10 family inet address 10.0.10.3/24 vrrp-group 10 accept-data
