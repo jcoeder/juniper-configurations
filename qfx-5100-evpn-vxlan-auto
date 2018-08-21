@@ -483,25 +483,3 @@ set switch-options vrf-target auto
 set vlans VLAN10 vlan-id 10
 set vlans VLAN10 vxlan vni 10
 set vlans VLAN10 vxlan ingress-node-replication
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
