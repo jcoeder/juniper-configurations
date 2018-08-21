@@ -1,0 +1,140 @@
+#########SPINE-1#########
+set system host-name SPINE-1
+
+set interfaces xe-0/0/0 description LEAF-1
+set interfaces xe-0/0/0 mtu 9216
+set interfaces xe-0/0/0 unit 0 family inet mtu 9202
+set interfaces xe-0/0/0 unit 0 family inet address 10.90.8.0/31
+set interfaces xe-0/0/1 description LEAF-2
+set interfaces xe-0/0/1 mtu 9216
+set interfaces xe-0/0/1 unit 0 family inet mtu 9202
+set interfaces xe-0/0/1 unit 0 family inet address 10.90.8.2/31
+set interfaces xe-0/0/2 description LEAF-3
+set interfaces xe-0/0/2 mtu 9216
+set interfaces xe-0/0/2 unit 0 family inet mtu 9202
+set interfaces xe-0/0/2 unit 0 family inet address 10.90.8.4/31
+set interfaces xe-0/0/3 description LEAF-4
+set interfaces xe-0/0/3 mtu 9216
+set interfaces xe-0/0/3 unit 0 family inet mtu 9202
+set interfaces xe-0/0/3 unit 0 family inet address 10.90.8.6/31
+
+set interfaces lo0 unit 0 family inet address 10.90.0.1/32
+
+set forwarding-options storm-control-profiles DEFAULT all bandwidth-percentage 50
+set forwarding-options storm-control-profiles DEFAULT action-shutdown
+set forwarding-options storm-control-profiles UPLINKS all bandwidth-percentage 85
+set forwarding-options storm-control-profiles UPLINKS action-shutdown
+
+set routing-options static route 0.0.0.0/0 next-hop 192.168.0.1
+set routing-options router-id 10.90.0.1
+set routing-options autonomous-system 65001
+
+set routing-options forwarding-table export LOAD_BALANCE
+set routing-options forwarding-table ecmp-fast-reroute
+
+set protocols bgp group UNDERLAY type external
+set protocols bgp group UNDERLAY export EXPORT_LO
+set protocols bgp group UNDERLAY local-as 65001
+set protocols bgp group UNDERLAY bfd-liveness-detection version 1
+set protocols bgp group UNDERLAY bfd-liveness-detection minimum-interval 350
+set protocols bgp group UNDERLAY bfd-liveness-detection multiplier 3
+set protocols bgp group UNDERLAY multipath multiple-as
+set protocols bgp group UNDERLAY neighbor 10.90.8.1 description LEAF-1
+set protocols bgp group UNDERLAY neighbor 10.90.8.1 peer-as 65101
+set protocols bgp group UNDERLAY neighbor 10.90.8.3 description LEAF-2
+set protocols bgp group UNDERLAY neighbor 10.90.8.3 peer-as 65102
+set protocols bgp group UNDERLAY neighbor 10.90.8.5 description LEAF-3
+set protocols bgp group UNDERLAY neighbor 10.90.8.5 peer-as 65103
+set protocols bgp group UNDERLAY neighbor 10.90.8.7 description LEAF-4
+set protocols bgp group UNDERLAY neighbor 10.90.8.7 peer-as 65104
+
+set protocols lldp port-id-subtype interface-name
+set protocols lldp port-description-type interface-alias
+set protocols lldp neighbour-port-info-display port-id
+set protocols lldp interface all
+set protocols lldp-med interface all
+
+set protocols igmp-snooping vlan default
+
+set policy-options prefix-list UNDERLAY 10.90.0.0/20
+
+set policy-options prefix-list UNDERLAY_LOOPBACKS 10.90.0.0/21
+
+set policy-options prefix-list UNDERLAY_P2PS 10.90.8.0/21
+
+set policy-options policy-statement EXPORT_LO term 1 from protocol direct
+set policy-options policy-statement EXPORT_LO term 1 from interface lo0.0
+set policy-options policy-statement EXPORT_LO term 1 from prefix-list-filter UNDERLAY orlonger
+set policy-options policy-statement EXPORT_LO term 1 then accept
+
+set policy-options policy-statement LOAD_BALANCE term 1 then load-balance per-packet
+
+#########SPINE-2#########
+set system host-name SPINE-2
+
+set interfaces xe-0/0/0 description LEAF-1
+set interfaces xe-0/0/0 mtu 9216
+set interfaces xe-0/0/0 unit 0 family inet mtu 9202
+set interfaces xe-0/0/0 unit 0 family inet address 10.90.9.0/31
+set interfaces xe-0/0/1 description LEAF-2
+set interfaces xe-0/0/1 mtu 9216
+set interfaces xe-0/0/1 unit 0 family inet mtu 9202
+set interfaces xe-0/0/1 unit 0 family inet address 10.90.9.2/31
+set interfaces xe-0/0/2 description LEAF-3
+set interfaces xe-0/0/2 mtu 9216
+set interfaces xe-0/0/2 unit 0 family inet mtu 9202
+set interfaces xe-0/0/2 unit 0 family inet address 10.90.9.4/31
+set interfaces xe-0/0/3 description LEAF-4
+set interfaces xe-0/0/3 mtu 9216
+set interfaces xe-0/0/3 unit 0 family inet mtu 9202
+set interfaces xe-0/0/3 unit 0 family inet address 10.90.9.6/31
+
+set interfaces lo0 unit 0 family inet address 10.90.0.2/32
+
+set forwarding-options storm-control-profiles DEFAULT all bandwidth-percentage 50
+set forwarding-options storm-control-profiles DEFAULT action-shutdown
+set forwarding-options storm-control-profiles UPLINKS all bandwidth-percentage 85
+set forwarding-options storm-control-profiles UPLINKS action-shutdown
+
+set routing-options static route 0.0.0.0/0 next-hop 192.168.0.1
+
+set routing-options autonomous-system 65002
+set routing-options forwarding-table export LOAD_BALANCE
+set routing-options forwarding-table ecmp-fast-reroute
+
+set protocols bgp group UNDERLAY type external
+set protocols bgp group UNDERLAY export EXPORT_LO
+set protocols bgp group UNDERLAY local-as 65002
+set protocols bgp group UNDERLAY bfd-liveness-detection version 1
+set protocols bgp group UNDERLAY bfd-liveness-detection minimum-interval 350
+set protocols bgp group UNDERLAY bfd-liveness-detection multiplier 3
+set protocols bgp group UNDERLAY multipath multiple-as
+set protocols bgp group UNDERLAY neighbor 10.90.9.1 description LEAF-1
+set protocols bgp group UNDERLAY neighbor 10.90.9.1 peer-as 65101
+set protocols bgp group UNDERLAY neighbor 10.90.9.3 description LEAF-2
+set protocols bgp group UNDERLAY neighbor 10.90.9.3 peer-as 65102
+set protocols bgp group UNDERLAY neighbor 10.90.9.5 description LEAF-3
+set protocols bgp group UNDERLAY neighbor 10.90.9.5 peer-as 65103
+set protocols bgp group UNDERLAY neighbor 10.90.9.7 description LEAF-4
+set protocols bgp group UNDERLAY neighbor 10.90.9.7 peer-as 65104
+
+set protocols lldp port-id-subtype interface-name
+set protocols lldp port-description-type interface-alias
+set protocols lldp neighbour-port-info-display port-id
+set protocols lldp interface all
+set protocols lldp-med interface all
+
+set protocols igmp-snooping vlan default
+
+set policy-options prefix-list UNDERLAY 10.90.0.0/20
+
+set policy-options prefix-list UNDERLAY_LOOPBACKS 10.90.0.0/21
+
+set policy-options prefix-list UNDERLAY_P2PS 10.90.8.0/21
+
+set policy-options policy-statement EXPORT_LO term 1 from protocol direct
+set policy-options policy-statement EXPORT_LO term 1 from interface lo0.0
+set policy-options policy-statement EXPORT_LO term 1 from prefix-list-filter UNDERLAY orlonger
+set policy-options policy-statement EXPORT_LO term 1 then accept
+
+set policy-options policy-statement LOAD_BALANCE term 1 then load-balance per-packet
