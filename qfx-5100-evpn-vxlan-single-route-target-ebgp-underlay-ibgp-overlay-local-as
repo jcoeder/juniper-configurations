@@ -20,11 +20,6 @@ set interfaces xe-0/0/3 unit 0 family inet address 10.90.8.6/31
 
 set interfaces lo0 unit 0 family inet address 10.90.0.1/32
 
-set forwarding-options storm-control-profiles DEFAULT all bandwidth-percentage 50
-set forwarding-options storm-control-profiles DEFAULT action-shutdown
-set forwarding-options storm-control-profiles UPLINKS all bandwidth-percentage 85
-set forwarding-options storm-control-profiles UPLINKS action-shutdown
-
 set routing-options router-id 10.90.0.1
 set routing-options autonomous-system 65001
 set routing-options forwarding-table export LOAD_BALANCE
@@ -45,12 +40,6 @@ set protocols bgp group UNDERLAY neighbor 10.90.8.5 description LEAF-3
 set protocols bgp group UNDERLAY neighbor 10.90.8.5 peer-as 65103
 set protocols bgp group UNDERLAY neighbor 10.90.8.7 description LEAF-4
 set protocols bgp group UNDERLAY neighbor 10.90.8.7 peer-as 65104
-
-set protocols lldp port-id-subtype interface-name
-set protocols lldp port-description-type interface-alias
-set protocols lldp neighbour-port-info-display port-id
-set protocols lldp interface all
-set protocols lldp-med interface all
 
 set protocols igmp-snooping vlan default
 
@@ -89,11 +78,6 @@ set interfaces xe-0/0/3 unit 0 family inet address 10.90.9.6/31
 
 set interfaces lo0 unit 0 family inet address 10.90.0.2/32
 
-set forwarding-options storm-control-profiles DEFAULT all bandwidth-percentage 50
-set forwarding-options storm-control-profiles DEFAULT action-shutdown
-set forwarding-options storm-control-profiles UPLINKS all bandwidth-percentage 85
-set forwarding-options storm-control-profiles UPLINKS action-shutdown
-
 set routing-options router-id 10.90.0.2
 set routing-options autonomous-system 65002
 set routing-options forwarding-table export LOAD_BALANCE
@@ -114,12 +98,6 @@ set protocols bgp group UNDERLAY neighbor 10.90.9.5 description LEAF-3
 set protocols bgp group UNDERLAY neighbor 10.90.9.5 peer-as 65103
 set protocols bgp group UNDERLAY neighbor 10.90.9.7 description LEAF-4
 set protocols bgp group UNDERLAY neighbor 10.90.9.7 peer-as 65104
-
-set protocols lldp port-id-subtype interface-name
-set protocols lldp port-description-type interface-alias
-set protocols lldp neighbour-port-info-display port-id
-set protocols lldp interface all
-set protocols lldp-med interface all
 
 set protocols igmp-snooping vlan default
 
@@ -150,12 +128,6 @@ set interfaces xe-0/0/1 unit 0 family inet address 10.90.9.1/31
 
 set interfaces lo0 unit 0 family inet address 10.90.1.1/32
 
-set forwarding-options storm-control-profiles DEFAULT all bandwidth-percentage 50
-set forwarding-options storm-control-profiles DEFAULT action-shutdown
-set forwarding-options storm-control-profiles UPLINKS all bandwidth-percentage 85
-set forwarding-options storm-control-profiles UPLINKS action-shutdown
-
-set routing-options static route 0.0.0.0/0 next-hop 192.168.0.1
 set routing-options router-id 10.90.1.1
 set routing-options autonomous-system 65101
 set routing-options forwarding-table export LOAD_BALANCE
@@ -187,12 +159,6 @@ set protocols evpn encapsulation vxlan
 set protocols evpn extended-vni-list all
 set protocols evpn multicast-mode ingress-replication
 
-set protocols lldp port-id-subtype interface-name
-set protocols lldp port-description-type interface-alias
-set protocols lldp neighbour-port-info-display port-id
-set protocols lldp interface all
-set protocols lldp-med interface all
-
 set protocols igmp-snooping vlan default
 
 set policy-options prefix-list UNDERLAY 10.90.0.0/20
@@ -210,17 +176,11 @@ set policy-options policy-statement EXPORT_LO term 2 then reject
 
 set policy-options policy-statement LOAD_BALANCE term 1 then load-balance per-packet
 
-set policy-options policy-statement VRF_IMPORT term EVPN from community EVPN
-set policy-options policy-statement VRF_IMPORT term EVPN then accept
-set policy-options policy-statement VRF_IMPORT term REJECT then reject
-
-set policy-options community EVPN members target:9999:9999
+set policy-options community EVPN_TYPE_1 members target:9999:9999
 
 set switch-options vtep-source-interface lo0.0
 set switch-options route-distinguisher 10.90.1.1:1
-set switch-options vrf-import VRF_IMPORT
 set switch-options vrf-target target:9999:9999
-set switch-options vrf-target auto
 
 set vlans VLAN10 vlan-id 10
 set vlans VLAN10 vxlan vni 10
@@ -239,11 +199,6 @@ set interfaces xe-0/0/1 unit 0 family inet mtu 9202
 set interfaces xe-0/0/1 unit 0 family inet address 10.90.9.3/31
 
 set interfaces lo0 unit 0 family inet address 10.90.1.2/32
-
-set forwarding-options storm-control-profiles DEFAULT all bandwidth-percentage 50
-set forwarding-options storm-control-profiles DEFAULT action-shutdown
-set forwarding-options storm-control-profiles UPLINKS all bandwidth-percentage 85
-set forwarding-options storm-control-profiles UPLINKS action-shutdown
 
 set routing-options router-id 10.90.1.2
 set routing-options autonomous-system 65102
@@ -276,12 +231,6 @@ set protocols evpn encapsulation vxlan
 set protocols evpn extended-vni-list all
 set protocols evpn multicast-mode ingress-replication
 
-set protocols lldp port-id-subtype interface-name
-set protocols lldp port-description-type interface-alias
-set protocols lldp neighbour-port-info-display port-id
-set protocols lldp interface all
-set protocols lldp-med interface all
-
 set protocols igmp-snooping vlan default
 
 set policy-options prefix-list UNDERLAY 10.90.0.0/20
@@ -299,17 +248,11 @@ set policy-options policy-statement EXPORT_LO term 2 then reject
 
 set policy-options policy-statement LOAD_BALANCE term 1 then load-balance per-packet
 
-set policy-options policy-statement VRF_IMPORT term EVPN from community EVPN
-set policy-options policy-statement VRF_IMPORT term EVPN then accept
-set policy-options policy-statement VRF_IMPORT term REJECT then reject
-
-set policy-options community EVPN members target:9999:9999
+set policy-options community EVPN_TYPE_1 members target:9999:9999
 
 set switch-options vtep-source-interface lo0.0
 set switch-options route-distinguisher 10.90.1.2:1
-set switch-options vrf-import VRF_IMPORT
 set switch-options vrf-target target:9999:9999
-set switch-options vrf-target auto
 
 set vlans VLAN10 vlan-id 10
 set vlans VLAN10 vxlan vni 10
@@ -329,12 +272,6 @@ set interfaces xe-0/0/1 unit 0 family inet address 10.90.9.5/31
 
 set interfaces lo0 unit 0 family inet address 10.90.1.3/32
 
-set forwarding-options storm-control-profiles DEFAULT all bandwidth-percentage 50
-set forwarding-options storm-control-profiles DEFAULT action-shutdown
-set forwarding-options storm-control-profiles UPLINKS all bandwidth-percentage 85
-set forwarding-options storm-control-profiles UPLINKS action-shutdown
-
-set routing-options static route 0.0.0.0/0 next-hop 192.168.0.1
 set routing-options router-id 10.90.1.3
 set routing-options forwarding-table export LOAD_BALANCE
 set routing-options forwarding-table ecmp-fast-reroute
@@ -365,12 +302,6 @@ set protocols evpn encapsulation vxlan
 set protocols evpn extended-vni-list all
 set protocols evpn multicast-mode ingress-replication
 
-set protocols lldp port-id-subtype interface-name
-set protocols lldp port-description-type interface-alias
-set protocols lldp neighbour-port-info-display port-id
-set protocols lldp interface all
-set protocols lldp-med interface all
-
 set protocols igmp-snooping vlan default
 
 set policy-options prefix-list UNDERLAY 10.90.0.0/20
@@ -381,24 +312,18 @@ set policy-options prefix-list UNDERLAY_P2PS 10.90.8.0/21
 
 set policy-options policy-statement EXPORT_LO term 1 from protocol direct
 set policy-options policy-statement EXPORT_LO term 1 from interface lo0.0
-set policy-options policy-statement EXPORT_LO term 1 from route-filter 0.0.0.0/0 prefix-length-range /3                                                  2-/32
+set policy-options policy-statement EXPORT_LO term 1 from route-filter 0.0.0.0/0 prefix-length-range /32-/32                                                  2-/32
 set policy-options policy-statement EXPORT_LO term 1 from prefix-list-filter UNDERLAY orlonger
 set policy-options policy-statement EXPORT_LO term 1 then accept
 set policy-options policy-statement EXPORT_LO term 2 then reject
 
 set policy-options policy-statement LOAD_BALANCE term 1 then load-balance per-packet
 
-set policy-options policy-statement VRF_IMPORT term EVPN from community EVPN
-set policy-options policy-statement VRF_IMPORT term EVPN then accept
-set policy-options policy-statement VRF_IMPORT term REJECT then reject
-
-set policy-options community EVPN members target:9999:9999
+set policy-options community EVPN_TYPE_1 members target:9999:9999
 
 set switch-options vtep-source-interface lo0.0
 set switch-options route-distinguisher 10.90.1.3:1
-set switch-options vrf-import VRF_IMPORT
 set switch-options vrf-target target:9999:9999
-set switch-options vrf-target auto
 
 set vlans VLAN10 vlan-id 10
 set vlans VLAN10 vxlan vni 10
@@ -417,11 +342,6 @@ set interfaces xe-0/0/1 unit 0 family inet mtu 9202
 set interfaces xe-0/0/1 unit 0 family inet address 10.90.9.7/31
 
 set interfaces lo0 unit 0 family inet address 10.90.1.4/32
-
-set forwarding-options storm-control-profiles DEFAULT all bandwidth-percentage 50
-set forwarding-options storm-control-profiles DEFAULT action-shutdown
-set forwarding-options storm-control-profiles UPLINKS all bandwidth-percentage 85
-set forwarding-options storm-control-profiles UPLINKS action-shutdown
 
 set routing-options router-id 10.90.1.4
 set routing-options forwarding-table export LOAD_BALANCE
@@ -453,12 +373,6 @@ set protocols evpn encapsulation vxlan
 set protocols evpn extended-vni-list all
 set protocols evpn multicast-mode ingress-replication
 
-set protocols lldp port-id-subtype interface-name
-set protocols lldp port-description-type interface-alias
-set protocols lldp neighbour-port-info-display port-id
-set protocols lldp interface all
-set protocols lldp-med interface all
-
 set protocols igmp-snooping vlan default
 
 set policy-options prefix-list UNDERLAY 10.90.0.0/20
@@ -476,17 +390,11 @@ set policy-options policy-statement EXPORT_LO term 2 then reject
 
 set policy-options policy-statement LOAD_BALANCE term 1 then load-balance per-packet
 
-set policy-options policy-statement VRF_IMPORT term EVPN from community EVPN
-set policy-options policy-statement VRF_IMPORT term EVPN then accept
-set policy-options policy-statement VRF_IMPORT term REJECT then reject
-
-set policy-options community EVPN members target:9999:9999
+set policy-options community EVPN_TYPE_1 members target:9999:9999
 
 set switch-options vtep-source-interface lo0.0
 set switch-options route-distinguisher 10.90.1.4:1
-set switch-options vrf-import VRF_IMPORT
 set switch-options vrf-target target:9999:9999
-set switch-options vrf-target auto
 
 set vlans VLAN10 vlan-id 10
 set vlans VLAN10 vxlan vni 10
