@@ -1,0 +1,17 @@
+# A collection of BGP communties from different providers (ASN) I have worked with in the past
+
+community cymru-bogons members 65332:888;
+
+community level3-4323-blackhole members 4323:187;
+community level3-4323-ignore-meds members 4323:12;
+community level3-4323-local-and-customers-only members 4323:666;
+community level3-4323-local-pref-110 members 4323:110;
+community level3-4323-local-pref-120 members 4323:120;
+community level3-4323-local-pref-70 members 4323:70;
+community level3-4323-local-pref-80 members 4323:80;
+community level3-4323-local-pref-90 members 4323:90;
+community level3-4323-local-prepend-1 members 4323:1;
+community level3-4323-local-prepend-2 members 4323:2;
+community level3-4323-local-prepend-3 members 4323:3;
+
+community twc-10796-blackhole members 7843:666;
