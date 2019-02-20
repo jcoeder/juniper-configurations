@@ -41,7 +41,3 @@ set firewall family inet filter IRP_FBF term default then accept
 set firewall family inet6 filter IRP_FBF_V6 term 1 from source-address 2700:ffff:0:8::5/128
 set firewall family inet6 filter IRP_FBF_V6 term 1 then routing-instance IRP_LEVEL3_1
 set firewall family inet6 filter IRP_FBF_V6 term default then accept
-
-Justin Oeder
-http://beyondhosting.net
-Managed Public Cloud Provider
