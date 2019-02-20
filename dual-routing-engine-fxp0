@@ -10,7 +10,3 @@ set groups re1 interfaces fxp0 unit 0 family inet6 address 2000:ffff:2::32/64
 
 set apply-groups re0
 set apply-groups re1
-
-Justin Oeder
-http://beyondhosting.net
-Managed Public Cloud Provider
