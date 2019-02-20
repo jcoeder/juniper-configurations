@@ -32,7 +32,3 @@ set interfaces xe-1/2/0 unit 0 family inet sampling output
 
 set interfaces xe-1/2/0 unit 0 family inet6 sampling input
 set interfaces xe-1/2/0 unit 0 family inet6 sampling output
-
-Justin Oeder
-http://beyondhosting.net
-Managed Public Cloud Provider
