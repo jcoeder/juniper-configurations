@@ -3,7 +3,3 @@ set policy-options prefix-list BGP_PEERS_DYNAMIC apply-path "protocols bgp group
 
 # In this second statement we use wildcards surrounding a : as this is the format of an IPv6 address.
 set policy-options prefix-list BGP_PEERS_DYNAMIC_V6 apply-path "protocols bgp group <*> neighbor <*:*>"
-
-Justin Oeder
-http://beyondhosting.net
-Managed Public Cloud Provider
