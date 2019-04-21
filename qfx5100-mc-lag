@@ -50,6 +50,15 @@ After Upgrade to Junos 15.1
 -If doing a non back to back MC LAG Aggregated Ethernet to a downstream Host then enable Spanning Tree on the Link
 
 
+17.3R3 is now the recommended 'LTS' version for the QFX5100s.
+
+-Initial upgrade testing has proved meh at best.
+
+-Upon upgrade additional configuraiton items (redudancy groups) must be configured
+
+-Until the redudancy groups are configured, SSH on the device fails to start (maybe its all routing/forwarding, unsure)
+
+
 Caveats and things to know
 The ICL link does not learn MAC addresses on it
 ARP replies are dropped on the ICL links, that is why the static ARP entry on the IRB interface is needed
