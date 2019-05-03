@@ -17,7 +17,8 @@ After Upgrade to Junos 15.1
 
 -VRRP on the IRB interfaces was required to run in order to get the peers able to reach one another reliably and be reached from other testing MC-LAG peers reliably
 
--Initially the ICCP BFD timers were set too aggressively at 60ms with a hold count of 3 causing ICCP peer lost messages.  Bumping these to 500ms and a hold count of 3 smoothed this out to a very reliable level of operation.  Likely related to this PR.  https://prsearch.juniper.net/InfoCenter/index?page=prcontent&id=PR942035
+-Initially the ICCP BFD timers were set too aggressively at 60ms with a hold count of 3 causing ICCP peer lost messages.  Bumping these to 500ms and a hold count of 3 smoothed this out to a very reliable level of operation.  Likely related to this PR.  https://prsearch.juniper.net/InfoCenter/index?page=prcontent&id=PR942035  https://www.juniper.net/documentation/en_US/junos/topics/concept/bfd-understanding-qfx-series.html
+Note: QFX5100 switches and EX4600 switches do not support minimum interval values of less than 1 second.
 
 -backup-liveness-detection was configured to poll the MC-LAG peer on the OOB management interface.  This does not send ICCP messages but will check to see if the peer is alive if the ICCP link is down or if the peer suffered a catastrophic event or power failure.  This helps the MC-LAG peers to determine what state to take in the event of an ICCP loss.
 
