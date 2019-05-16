@@ -1,0 +1,1 @@
+set system login user bob authentication plain-text-password-value password123
