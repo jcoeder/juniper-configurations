@@ -51,6 +51,7 @@ Note: QFX5100 switches and EX4600 switches do not support minimum interval valu
 -If doing a non back to back MC LAG Aggregated Ethernet to a downstream Host then enable Spanning Tree on the Link
 
 
+# UPGRADE PROCESS FROM 15.1 to 17.3
 17.3R3 is now the recommended 'LTS' version for the QFX5100s.
 
 -Initial upgrade testing has proved meh at best.
@@ -64,7 +65,59 @@ Note: QFX5100 switches and EX4600 switches do not support minimum interval valu
 -Must configure redudancy-group 1 under 'protocols iccp' and each mc-lag 'interface aeX'
 
 
-Caveats and things to know
+
+# UPGRADE PROCESS FROM 15.1 to 17.3
+Current Recommended version - jinstall-host-qfx-5-flex-17.3R3-S3.3-signed.tgz
+
+scp jinstall-host-qfx-5-flex-17.3R3-S3.3-signed.tgz to /var/tmp
+
+Each switch takes about 16-18 minutes to install the software and reboot after the software has been SCPd to the device
+
+ - Create Configuration Snapshot
+request system configuration rescue save
+
+ - Insert USB and create a snapshot
+request system snapshot
+
+ - Add required configuration
+set protocols iccp peer 169.254.0.10 redundancy-group-id-list 1
+set protocols iccp peer 169.254.0.10 liveness-detection minimum-interval 1000
+set interfaces ae3 aggregated-ether-options mc-ae redundancy-group 1
+set interfaces ae4 aggregated-ether-options mc-ae redundancy-group 1
+set interfaces ae5 aggregated-ether-options mc-ae redundancy-group 1
+set interfaces ae6 aggregated-ether-options mc-ae redundancy-group 1
+set interfaces ae7 aggregated-ether-options mc-ae redundancy-group 1
+set interfaces ae18 aggregated-ether-options mc-ae redundancy-group 1
+
+
+ - Shutdown the interfaces and commit the configuration
+wildcard range set interfaces xe-0/0/[0-48] disable
+wildcard range set interfaces ge-0/0/[0-48] disable
+commit
+
+ - Start the install process and wait for reboot
+request system software add no-copy unlink reboot validate force-host /var/tmp/jinstall-host-qfx-5-flex-17.3R3-S3.3-signed.tgz
+
+ - Once able to log in.  Rollback the configuration to re-enable interfaces.  Setting the version is cosmetic
+rollback 2
+set version 17.3R3-S3.3
+commit
+
+Check for ICCP and wait for ICCP to establish
+ - show iccp
+
+ - Once ICCP is up.  Monitor and wait for MC-LAG init delay to end.
+show interface mc-ae id X
+
+ - Check BFD
+show bfd session
+
+ - Check ethernet-switching table
+run show ethernet-switching table
+
+
+
+# CAVEATS AND THINGS TO KNOW
 The ICL link does not learn MAC addresses on it
 MAYBE - ARP replies are dropped on the ICL links, that is why the static ARP entry on the IRB interface is needed
 BPDU Block recovery under layer2 protocols will not auto re enable a port that was BPDU Block disabled BEFORE you turn on bpdu disable timeout
