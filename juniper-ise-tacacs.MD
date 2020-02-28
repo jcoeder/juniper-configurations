@@ -24,3 +24,8 @@ login {
         class super-user;               
     }                                   
 }```
+
+![Operator Policy Elements](https://raw.githubusercontent.com/jcoeder/juniper-configurations/master/op.png)
+
+
+![Policy](https://raw.githubusercontent.com/jcoeder/juniper-configurations/master/policy.png)
