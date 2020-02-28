@@ -1,6 +1,6 @@
 # Router Config
 
-`tacplus-server {
+```tacplus-server {
     172.16.100.50 {
         source-address 172.16.100.30;
     }
@@ -23,5 +23,4 @@ login {
         uid 2002;                       
         class super-user;               
     }                                   
-}      
-
+}```
