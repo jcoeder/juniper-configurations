@@ -17,7 +17,7 @@ set firewall family inet filter PROTECT_RE term ALLOW_ICMP then count PROTECT_RE
 set firewall family inet filter PROTECT_RE term ALLOW_ICMP then accept
 
 set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE from protocol udp
-set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE from destination-port 33434-33523
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE from port 33434-33523
 set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE then policer POLICE_1M
 set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE then count PROTECT_RE_ALLOW_TRACEROUTE
 set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE then accept
@@ -77,8 +77,8 @@ set firewall family inet filter PROTECT_RE term ALLOW_VRRP then count PROTECT_RE
 set firewall family inet filter PROTECT_RE term ALLOW_VRRP then accept
 
 set firewall family inet filter PROTECT_RE term ALLOW_BFD from protocol udp
-set firewall family inet filter PROTECT_RE term ALLOW_BFD from destination-port 3784
-set firewall family inet filter PROTECT_RE term ALLOW_BFD from destination-port 4784
+set firewall family inet filter PROTECT_RE term ALLOW_BFD from port 3784
+set firewall family inet filter PROTECT_RE term ALLOW_BFD from port 4784
 set firewall family inet filter PROTECT_RE term ALLOW_BFD then count PROTECT_RE_ALLOW_BFD
 set firewall family inet filter PROTECT_RE term ALLOW_BFD then accept
 
