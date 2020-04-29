@@ -15,9 +15,3 @@ Copy and paste... mostly.
 5. Submit a pull request :D
 
 ## End
-
-Justin Oeder
-
-http://beyondhosting.net
-
-Managed Public Cloud Provider
