@@ -32,28 +32,28 @@ set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_OSPF then accept
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from source-prefix-list BGP_PEERS_DYNAMIC_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from source-prefix-list LINK_LOCAL_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from payload-protocol tcp
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from destination-port bgp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from port bgp
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP then count PROTECT_RE_V6_ALLOW_BGP
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP then accept
 
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from source-prefix-list ENCORE_INTERNAL_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from source-prefix-list LINK_LOCAL_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from payload-protocol tcp
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from destination-port ssh
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from port ssh
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH then count PROTECT_RE_V6_ALLOW_SSH
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH then accept
 
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from source-prefix-list ENCORE_INTERNAL_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from source-prefix-list LINK_LOCAL_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from payload-protocol tcp
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from destination-port 830
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from port 830
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF then count PROTECT_RE_V6_ALLOW_NETCONF
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF then accept
 
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from source-prefix-list SNMP_SERVERS_DYNAMIC_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from source-prefix-list LINK_LOCAL_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from payload-protocol udp
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from destination-port snmp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from port snmp
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP then policer POLICE_10M
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP then count PROTECT_RE_V6_ALLOW_SNMP
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP then accept
@@ -63,7 +63,7 @@ set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from source-prefix
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from source-prefix-list NTP_SOURCE_DYNAMIC_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from source-prefix-list LINK_LOCAL_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from payload-protocol udp
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from source-port ntp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from port ntp
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP then policer POLICE_32K
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP then count PROTECT_RE_V6_ALLOW_NTP
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP then accept
