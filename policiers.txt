@@ -1,0 +1,15 @@
+set firewall policer POLICE_10M if-exceeding bandwidth-limit 10m
+set firewall policer POLICE_10M if-exceeding burst-size-limit 625k
+set firewall policer POLICE_10M then discard
+
+set firewall policer POLICE_1M if-exceeding bandwidth-limit 1m
+set firewall policer POLICE_1M if-exceeding burst-size-limit 15k
+set firewall policer POLICE_1M then discard
+
+set firewall policer POLICE_100K if-exceeding bandwidth-limit 100k
+set firewall policer POLICE_100K if-exceeding burst-size-limit 15k
+set firewall policer POLICE_100K then discard
+
+set firewall policer POLICE_32K if-exceeding bandwidth-limit 32k
+set firewall policer POLICE_32K if-exceeding burst-size-limit 15k
+set firewall policer POLICE_32K then discard
