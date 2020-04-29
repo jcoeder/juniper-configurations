@@ -42,13 +42,6 @@ set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from payload-p
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from destination-port 830
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF then accept
 
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TACACS from source-prefix-list TACACS_SERVERS_DYNAMIC_V6
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TACACS from source-prefix-list LINK_LOCAL_V6
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TACACS from payload-protocol tcp
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TACACS from source-port tacacs
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TACACS then policer POLICE_32K
-set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TACACS then accept
-
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from source-prefix-list SNMP_SERVERS_DYNAMIC_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from source-prefix-list LINK_LOCAL_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from payload-protocol udp
@@ -65,6 +58,13 @@ set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from source-port n
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP then policer POLICE_32K
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP then accept
 
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from source-prefix-list DNS_SERVERS_DYNAMIC_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from source-prefix-list LINK_LOCAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from payload-protocol udp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from port domain
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then policer POLICE_32K
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then accept
+
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP from destination-prefix-list VRRP_ROUTERS_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP from destination-prefix-list LOCALHOST_DYNAMIC_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP from destination-prefix-list LINK_LOCAL_V6
@@ -76,6 +76,11 @@ set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BFD from payload-proto
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BFD from destination-port 3784
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BFD from destination-port 4784
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BFD then accept
+
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED from payload-protocol tcp
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED from tcp-established
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then policer POLICE_10M
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then accept
 
 set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then log
 set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then discard
