@@ -71,6 +71,7 @@ set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP then accept
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from source-prefix-list DNS_SERVERS_DYNAMIC_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from source-prefix-list LINK_LOCAL_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from payload-protocol udp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from payload-protocol tcp
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from port domain
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then policer POLICE_32K
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then count PROTECT_RE_V6_ALLOW_DNS
