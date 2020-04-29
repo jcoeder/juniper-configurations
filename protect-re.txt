@@ -64,6 +64,7 @@ set firewall family inet filter PROTECT_RE term ALLOW_NTP then accept
 
 set firewall family inet filter PROTECT_RE term ALLOW_DNS from source-prefix-list DNS_SERVERS_DYNAMIC
 set firewall family inet filter PROTECT_RE term ALLOW_DNS from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_DNS from protocol tcp
 set firewall family inet filter PROTECT_RE term ALLOW_DNS from port domain
 set firewall family inet filter PROTECT_RE term ALLOW_DNS then policer POLICE_32K
 set firewall family inet filter PROTECT_RE term ALLOW_DNS then count PROTECT_RE_ALLOW_DNS
