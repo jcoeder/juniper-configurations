@@ -5,8 +5,8 @@ set policy-options prefix-list INTERNAL 10.0.0.0/8
 set policy-options prefix-list INTERNAL 172.16.0.0/12
 set policy-options prefix-list INTERNAL 192.168.0.0/16
 
-set policy-options prefix-list ENCORE_INTERNAL_V6 2001::/64
-set policy-options prefix-list ENCORE_INTERNAL_V6 2002::/64
+set policy-options prefix-list INTERNAL_V6 2001::/64
+set policy-options prefix-list INTERNAL_V6 2002::/64
 
 set policy-options prefix-list BGP_PEERS_DYNAMIC apply-path "protocols bgp group <*> neighbor <*.*.*.*>"
 set policy-options prefix-list BGP_PEERS_DYNAMIC_V6 apply-path "protocols bgp group <*> neighbor <*:*:*>"
