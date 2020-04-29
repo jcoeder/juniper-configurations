@@ -85,7 +85,7 @@ set firewall family inet filter PROTECT_RE term ALLOW_BFD then accept
 set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED from protocol tcp
 set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED from tcp-established
 set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then policer POLICE_10M
-set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then count PROTECT_RE_V6_TCP_ESTABLISHED
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then count PROTECT_RE_TCP_ESTABLISHED
 set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then accept
 
 set firewall family inet filter PROTECT_RE term DEFAULT_DENY then count PROTECT_RE_DEFAULT_DENY
