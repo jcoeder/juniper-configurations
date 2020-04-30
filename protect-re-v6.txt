@@ -100,3 +100,4 @@ set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then accept
 set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then count PROTECT_RE_V6_DEFAULT_DENY
 set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then log
 set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then discard
+set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then syslog
