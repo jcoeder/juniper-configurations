@@ -4,6 +4,7 @@ set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT from tcp-fl
 set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT then policer POLICE_100K
 set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT then count PROTECT_RE_V6_SYNFLOOD_PROTECT
 set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT then accept
+set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT then syslog
 
 set firewall family inet6 filter PROTECT_RE_V6 term DENY_ICMP_FRAGS from payload-protocol icmp6
 set firewall family inet6 filter PROTECT_RE_V6 term DENY_ICMP_FRAGS from extension-header fragment
@@ -42,6 +43,7 @@ set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from payload-proto
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from port ssh
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH then count PROTECT_RE_V6_ALLOW_SSH
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH then syslog
 
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from source-prefix-list ENCORE_INTERNAL_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from source-prefix-list LINK_LOCAL_V6
@@ -49,6 +51,7 @@ set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from payload-p
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from port 830
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF then count PROTECT_RE_V6_ALLOW_NETCONF
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF then syslog
 
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from source-prefix-list SNMP_SERVERS_DYNAMIC_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from source-prefix-list LINK_LOCAL_V6
@@ -76,6 +79,7 @@ set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from port domain
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then policer POLICE_32K
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then count PROTECT_RE_V6_ALLOW_DNS
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then syslog
 
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP from destination-prefix-list VRRP_ROUTERS_V6
 set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP from destination-prefix-list LOCALHOST_DYNAMIC_V6
@@ -96,6 +100,7 @@ set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED from tcp-est
 set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then policer POLICE_10M
 set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then count PROTECT_RE_V6_TCP_ESTABLISHED
 set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then accept
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then syslog
 
 set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then count PROTECT_RE_V6_DEFAULT_DENY
 set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then log
