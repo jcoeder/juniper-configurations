@@ -1,0 +1,10 @@
+set snmp v3 usm local-engine user USERNAME authentication-md5 authentication-password PASSWORD
+set snmp v3 usm local-engine user USERNAME privacy-aes128 privacy-password PASSWORD
+
+set snmp v3 vacm security-to-group security-model usm security-name USERNAME group MONITORING
+set snmp v3 vacm access group MONITORING default-context-prefix security-model usm security-level privacy read-view ALL_MIBS
+
+set snmp engine-id use-default-ip-address
+
+set snmp view ALL_MIBS oid .1 include
+set snmp view ALL_MIBS oid .1.3.6.1 include # Just in case
