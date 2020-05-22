@@ -3,7 +3,14 @@ set snmp v3 usm local-engine user USERNAME privacy-aes128 privacy-password PASSW
 
 set snmp v3 vacm security-to-group security-model usm security-name USERNAME group MONITORING
 set snmp v3 vacm access group MONITORING default-context-prefix security-model usm security-level privacy read-view ALL_MIBS
+set snmp v3 vacm access group MONITORING context-prefix ROUTING_INSTANCE_NAME security-model usm security-level privacy read-view ALL_MIBS # use this for routing-instance access
 
 set snmp engine-id use-default-ip-address
 
 set snmp view ALL_MIBS oid .1 include
+
+
+
+
+
+https://blog.marquis.co/snmp-polling-over-a-routing-instance/
