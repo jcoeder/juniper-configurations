@@ -7,4 +7,3 @@ set snmp v3 vacm access group MONITORING default-context-prefix security-model u
 set snmp engine-id use-default-ip-address
 
 set snmp view ALL_MIBS oid .1 include
-set snmp view ALL_MIBS oid .1.3.6.1 include # Just in case
