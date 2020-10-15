@@ -4,7 +4,7 @@ set policy-options prefix-list BGP_PEERS_DYNAMIC apply-path "protocols bgp group
 # In this second statement we use wildcards surrounding a : as this is the format of an IPv6 address.
 set policy-options prefix-list BGP_PEERS_DYNAMIC_V6 apply-path "protocols bgp group <*> neighbor <*:*>"
 
-
+#Full list
 set policy-options prefix-list NTP_SERVERS_DYNAMIC apply-path "system ntp server <*.*.*.*>"
 set policy-options prefix-list NTP_SERVERS_DYNAMIC_V6 apply-path "system ntp server <*:*:*>"
 set policy-options prefix-list SNMP_SERVERS_DYNAMIC apply-path "snmp community <*> clients <*.*.*.*>"
@@ -19,3 +19,5 @@ set policy-options prefix-list BMP_SERVERS_DYNAMIC apply-path "routing-options b
 set policy-options prefix-list BMP_SERVERS_DYNAMIC_V6 apply-path "routing-options bmp station-address <*:*:*>"
 set policy-options prefix-list DNS_SERVERS_DYNAMIC apply-path "system name-server <*.*.*.*>"
 set policy-options prefix-list DNS_SERVERS_DYNAMIC_V6 apply-path "system name-server <*:*:*>"
+set policy-options prefix-list FLOW_SERVERS_DYNAMIC apply-path "forwarding-options sampling instance <*> family inet output flow-server <*.*.*.*>"
+set policy-options prefix-list FLOW_SERVERS_DYNAMIC_V6 apply-path "forwarding-options sampling instance <*> family inet6 output flow-server <*:*:*>"
