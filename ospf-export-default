@@ -1,8 +1,8 @@
-set protocols ospf external-preference 175
+set protocols ospf external-preference 175 # if you are trying not to override BGP default route - corner case
 set protocols ospf export default-originate
 set protocols ospf reference-bandwidth 100g
 
-set protocols ospf3 external-preference 175
+set protocols ospf3 external-preference 175 # if you are trying not to override BGP default route - corner case
 set protocols ospf3 export default-originate
 set protocols ospf3 reference-bandwidth 100g
 
