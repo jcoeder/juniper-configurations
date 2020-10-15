@@ -1,0 +1,44 @@
+#ISP Out
+
+set policy-options policy-statement PEER_4.4.4.4_OUT term 1 from community TRANSIT
+set policy-options policy-statement PEER_4.4.4.4_OUT term 1 from community NO_EXPORT
+set policy-options policy-statement PEER_4.4.4.4_OUT term 1 from community NO_READVERTISE
+set policy-options policy-statement PEER_4.4.4.4_OUT term 1 from community NOCTION
+set policy-options policy-statement PEER_4.4.4.4_OUT term 1 from community PEERS
+set policy-options policy-statement PEER_4.4.4.4_OUT term 1 from community DO_NOT_ANNOUNCE_TO_AS3356
+set policy-options policy-statement PEER_4.4.4.4_OUT term 1 then reject
+set policy-options policy-statement PEER_4.4.4.4_OUT term 2 from protocol aggregate
+set policy-options policy-statement PEER_4.4.4.4_OUT term 2 from tag 123456
+set policy-options policy-statement PEER_4.4.4.4_OUT term 2 from prefix-list COMPANY_AGGREGATE
+set policy-options policy-statement PEER_4.4.4.4_OUT term 2 then accept
+set policy-options policy-statement PEER_4.4.4.4_OUT term 3 from community BLACKHOLE
+set policy-options policy-statement PEER_4.4.4.4_OUT term 3 then community delete BLACKHOLE
+set policy-options policy-statement PEER_4.4.4.4_OUT term 3 then community set CENTURYLINK_3356_BLACKHOLE
+set policy-options policy-statement PEER_4.4.4.4_OUT term 3 then accept
+set policy-options policy-statement PEER_4.4.4.4_OUT term 4 from community CUSTOMERS
+set policy-options policy-statement PEER_4.4.4.4_OUT term 4 then community delete CUSTOMERS
+set policy-options policy-statement PEER_4.4.4.4_OUT term 4 then accept
+set policy-options policy-statement PEER_4.4.4.4_OUT term default then reject
+
+#ISP In
+set policy-options policy-statement PEER_4.4.4.4_IN term 1 from prefix-list-filter BOGONS orlonger
+set policy-options policy-statement PEER_4.4.4.4_IN term 1 then reject
+set policy-options policy-statement PEER_4.4.4.4_IN term 2 from as-path-group BOGON_ASNS
+set policy-options policy-statement PEER_4.4.4.4_IN term 2 then reject
+set policy-options policy-statement PEER_4.4.4.4_IN term 3 from prefix-list-filter COMPANY_AGGREGATE orlonger
+set policy-options policy-statement PEER_4.4.4.4_IN term 3 then reject
+set policy-options policy-statement PEER_4.4.4.4_IN term default then local-preference 100
+set policy-options policy-statement PEER_4.4.4.4_IN term default then community add TRANSIT
+set policy-options policy-statement PEER_4.4.4.4_IN term default then accept
+
+#Customers In
+set policy-options policy-statement PEER_97.0.0.1_IN term 1 from prefix-list-filter CUSTOMER_NAME exact
+set policy-options policy-statement PEER_97.0.0.1_IN term 1 then local-preference 120
+set policy-options policy-statement PEER_97.0.0.1_IN term 1 then community set CUSTOMERS
+set policy-options policy-statement PEER_97.0.0.1_IN term 1 then accept
+set policy-options policy-statement PEER_97.0.0.1_IN term 2 then reject
+
+#Customers Out Default Route
+set policy-options policy-statement PEER_97.0.0.1_OUT term 1 from prefix-list-filter DEFAULT_ROUTE exact
+set policy-options policy-statement PEER_97.0.0.1_OUT term 1 then accept
+set policy-options policy-statement PEER_97.0.0.1_OUT term 2 then reject
