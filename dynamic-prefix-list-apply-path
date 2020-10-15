@@ -3,3 +3,19 @@ set policy-options prefix-list BGP_PEERS_DYNAMIC apply-path "protocols bgp group
 
 # In this second statement we use wildcards surrounding a : as this is the format of an IPv6 address.
 set policy-options prefix-list BGP_PEERS_DYNAMIC_V6 apply-path "protocols bgp group <*> neighbor <*:*>"
+
+
+set policy-options prefix-list NTP_SERVERS_DYNAMIC apply-path "system ntp server <*.*.*.*>"
+set policy-options prefix-list NTP_SERVERS_DYNAMIC_V6 apply-path "system ntp server <*:*:*>"
+set policy-options prefix-list SNMP_SERVERS_DYNAMIC apply-path "snmp community <*> clients <*.*.*.*>"
+set policy-options prefix-list SNMP_SERVERS_DYNAMIC_V6 apply-path "snmp community <*> clients <*:*:*>"
+set policy-options prefix-list LOCALHOST_DYNAMIC apply-path "interfaces lo0 unit <*> family inet address <*.*.*.*>"
+set policy-options prefix-list LOCALHOST_DYNAMIC_V6 apply-path "interfaces lo0 unit <*> family inet6 address <*:*:*>"
+set policy-options prefix-list TACACS_SERVERS_DYNAMIC apply-path "system tacplus-server <*.*.*.*>"
+set policy-options prefix-list TACACS_SERVERS_DYNAMIC_V6 apply-path "system tacplus-server <*:*:*>"
+set policy-options prefix-list NTP_SOURCE_DYNAMIC apply-path "system ntp source-address <*.*.*.*>"
+set policy-options prefix-list NTP_SOURCE_DYNAMIC_V6 apply-path "system ntp source-address <*:*:*>"
+set policy-options prefix-list BMP_SERVERS_DYNAMIC apply-path "routing-options bmp station-address <*.*.*.*>"
+set policy-options prefix-list BMP_SERVERS_DYNAMIC_V6 apply-path "routing-options bmp station-address <*:*:*>"
+set policy-options prefix-list DNS_SERVERS_DYNAMIC apply-path "system name-server <*.*.*.*>"
+set policy-options prefix-list DNS_SERVERS_DYNAMIC_V6 apply-path "system name-server <*:*:*>"
