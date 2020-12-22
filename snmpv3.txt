@@ -1,3 +1,4 @@
+# Routing Instance MONITORING
 set snmp v3 usm local-engine user USERNAME authentication-md5 authentication-password PASSWORD
 set snmp v3 usm local-engine user USERNAME privacy-aes128 privacy-password PASSWORD
 
@@ -9,6 +10,17 @@ set snmp engine-id use-default-ip-address
 
 set snmp view ALL_MIBS oid .1 include
 
+
+
+# Default Routing Instance
+set snmp v3 usm local-engine user ZABBIX authentication-sha authentication-password abcd1234
+set snmp v3 usm local-engine user ZABBIX privacy-aes128 privacy-password abcd1234
+
+set snmp v3 vacm security-to-group security-model usm security-name ZABBIX group VIEW_ALL
+set snmp v3 vacm access group VIEW_ALL default-context-prefix security-model any security-level privacy read-view VIEW_ALL
+set snmp v3 vacm access group VIEW_ALL default-context-prefix security-model any security-level privacy notify-view VIEW_ALL
+
+set snmp view VIEW_ALL oid .1
 
 
 
