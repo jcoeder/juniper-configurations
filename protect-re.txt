@@ -98,3 +98,14 @@ set firewall family inet filter PROTECT_RE term DEFAULT_DENY then count PROTECT_
 set firewall family inet filter PROTECT_RE term DEFAULT_DENY then log
 set firewall family inet filter PROTECT_RE term DEFAULT_DENY then discard
 set firewall family inet filter PROTECT_RE term DEFAULT_DENY then syslog
+
+
+####
+Testing from a Linux device
+snmpwalk -v 2c -c COMMUNITY 10.0.0.1
+
+NTP Monlist Test
+ntpdc -n -s 10.0.0.1
+
+Standard NTP test
+ntpdc -n -s 10.0.0.1
