@@ -109,3 +109,121 @@ ntpdc -n -s 10.0.0.1
 
 Standard NTP test
 ntpdc -n -s 10.0.0.1
+
+
+##SRX with VPN and unknown OSPF neighbors
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT from source-prefix-list MGMT
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT from protocol tcp
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT from tcp-flags "(syn & !ack) | fin | rst"
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT then policer POLICE_100K
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT then count PROTECT_RE_SYNFLOOD_PROTECT
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT then syslog
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT then accept
+
+set firewall family inet filter PROTECT_RE term DENY_ICMP_FRAGS from is-fragment
+set firewall family inet filter PROTECT_RE term DENY_ICMP_FRAGS from protocol icmp
+set firewall family inet filter PROTECT_RE term DENY_ICMP_FRAGS then count PROTECT_RE_DENY_ICMP_FRAGS
+set firewall family inet filter PROTECT_RE term DENY_ICMP_FRAGS then log
+set firewall family inet filter PROTECT_RE term DENY_ICMP_FRAGS then discard
+
+set firewall family inet filter PROTECT_RE term ALLOW_ICMP from protocol icmp
+set firewall family inet filter PROTECT_RE term ALLOW_ICMP then policer POLICE_1M
+set firewall family inet filter PROTECT_RE term ALLOW_ICMP then count PROTECT_RE_ALLOW_ICMP
+set firewall family inet filter PROTECT_RE term ALLOW_ICMP then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE from port 33434-33523
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE then policer POLICE_1M
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE then count PROTECT_RE_ALLOW_TRACEROUTE
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_IKE from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_IKE from port 500
+set firewall family inet filter PROTECT_RE term ALLOW_IKE from port 4500
+set firewall family inet filter PROTECT_RE term ALLOW_IKE then count PROTECT_RE_ALLOW_IKE
+set firewall family inet filter PROTECT_RE term ALLOW_IKE then log
+set firewall family inet filter PROTECT_RE term ALLOW_IKE then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_VPN from protocol ah
+set firewall family inet filter PROTECT_RE term ALLOW_VPN from protocol esp
+set firewall family inet filter PROTECT_RE term ALLOW_VPN from protocol gre
+set firewall family inet filter PROTECT_RE term ALLOW_VPN then count PROTECT_RE_ALLOW_VPN
+set firewall family inet filter PROTECT_RE term ALLOW_VPN then log
+set firewall family inet filter PROTECT_RE term ALLOW_VPN then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_OSPF from protocol ospf
+set firewall family inet filter PROTECT_RE term ALLOW_OSPF then count PROTECT_RE_ALLOW_OSPF
+set firewall family inet filter PROTECT_RE term ALLOW_OSPF then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_BGP from source-prefix-list BGP_PEERS_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_BGP from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_BGP from port bgp
+set firewall family inet filter PROTECT_RE term ALLOW_BGP then count PROTECT_RE_ALLOW_BGP
+set firewall family inet filter PROTECT_RE term ALLOW_BGP then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_SSH from source-prefix-list MGMT
+set firewall family inet filter PROTECT_RE term ALLOW_SSH from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_SSH from port ssh
+set firewall family inet filter PROTECT_RE term ALLOW_SSH then count PROTECT_RE_ALLOW_SSH
+set firewall family inet filter PROTECT_RE term ALLOW_SSH then log
+set firewall family inet filter PROTECT_RE term ALLOW_SSH then syslog
+set firewall family inet filter PROTECT_RE term ALLOW_SSH then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF from source-prefix-list MGMT
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF from port 830
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF then count PROTECT_RE_ALLOW_NETCONF
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF then log
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF then syslog
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_HTTPS from source-prefix-list MGMT
+set firewall family inet filter PROTECT_RE term ALLOW_HTTPS from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_HTTPS from port 443
+set firewall family inet filter PROTECT_RE term ALLOW_HTTPS then count PROTECT_RE_ALLOW_HTTPS
+set firewall family inet filter PROTECT_RE term ALLOW_HTTPS then log
+set firewall family inet filter PROTECT_RE term ALLOW_HTTPS then syslog
+set firewall family inet filter PROTECT_RE term ALLOW_HTTPS then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP from source-prefix-list SNMP_SERVERS_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP from port snmp
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP then policer POLICE_10M
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP then count PROTECT_RE_ALLOW_SNMP
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_NTP from source-prefix-list LOCALHOST_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_NTP from source-prefix-list NTP_SERVERS_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_NTP from source-prefix-list NTP_SOURCE_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_NTP from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_NTP from port ntp
+set firewall family inet filter PROTECT_RE term ALLOW_NTP then policer POLICE_32K
+set firewall family inet filter PROTECT_RE term ALLOW_NTP then count PROTECT_RE_ALLOW_NTP
+set firewall family inet filter PROTECT_RE term ALLOW_NTP then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_DNS from source-prefix-list DNS_SERVERS_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_DNS from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_DNS from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_DNS from port domain
+set firewall family inet filter PROTECT_RE term ALLOW_DNS then policer POLICE_32K
+set firewall family inet filter PROTECT_RE term ALLOW_DNS then count PROTECT_RE_ALLOW_DNS
+set firewall family inet filter PROTECT_RE term ALLOW_DNS then syslog
+set firewall family inet filter PROTECT_RE term ALLOW_DNS then accept
+
+set firewall family inet filter PROTECT_RE term ALLOW_BFD from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_BFD from port 3784
+set firewall family inet filter PROTECT_RE term ALLOW_BFD from port 4784
+set firewall family inet filter PROTECT_RE term ALLOW_BFD then count PROTECT_RE_ALLOW_BFD
+set firewall family inet filter PROTECT_RE term ALLOW_BFD then accept
+
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED from protocol tcp
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED from tcp-established
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then policer POLICE_10M
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then count PROTECT_RE_TCP_ESTABLISHED
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then syslog
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then accept
+
+set firewall family inet filter PROTECT_RE term DEFAULT_DENY then count PROTECT_RE_DEFAULT_DENY
+set firewall family inet filter PROTECT_RE term DEFAULT_DENY then log
+set firewall family inet filter PROTECT_RE term DEFAULT_DENY then syslog
+set firewall family inet filter PROTECT_RE term DEFAULT_DENY then discard
