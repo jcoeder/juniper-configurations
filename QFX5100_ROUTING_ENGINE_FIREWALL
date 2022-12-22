@@ -1,0 +1,249 @@
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT from source-prefix-list COMPANY_INTERNAL
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT from protocol tcp
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT from tcp-flags "(syn & !ack) | fin | rst"
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT then policer POLICE_100K
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT then count PROTECT_RE_SYNFLOOD_PROTECT
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT then syslog
+set firewall family inet filter PROTECT_RE term SYNFLOOD_PROTECT then accept
+set firewall family inet filter PROTECT_RE term DENY_ICMP_FRAGS from is-fragment
+set firewall family inet filter PROTECT_RE term DENY_ICMP_FRAGS from protocol icmp
+set firewall family inet filter PROTECT_RE term DENY_ICMP_FRAGS then count PROTECT_RE_DENY_ICMP_FRAGS
+set firewall family inet filter PROTECT_RE term DENY_ICMP_FRAGS then log
+set firewall family inet filter PROTECT_RE term DENY_ICMP_FRAGS then discard
+set firewall family inet filter PROTECT_RE term ALLOW_ICMP from protocol icmp
+set firewall family inet filter PROTECT_RE term ALLOW_ICMP then policer POLICE_1M
+set firewall family inet filter PROTECT_RE term ALLOW_ICMP then count PROTECT_RE_ALLOW_ICMP
+set firewall family inet filter PROTECT_RE term ALLOW_ICMP then accept
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE from destination-port 33434-33523
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE then policer POLICE_1M
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE then count PROTECT_RE_ALLOW_TRACEROUTE
+set firewall family inet filter PROTECT_RE term ALLOW_TRACEROUTE then accept
+set firewall family inet filter PROTECT_RE term ALLOW_OSPF from destination-prefix-list LOCALHOST_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_OSPF from destination-prefix-list OSPF_ROUTERS
+set firewall family inet filter PROTECT_RE term ALLOW_OSPF from destination-prefix-list LOCAL_INTERFACES
+set firewall family inet filter PROTECT_RE term ALLOW_OSPF from protocol ospf
+set firewall family inet filter PROTECT_RE term ALLOW_OSPF then count PROTECT_RE_ALLOW_OSPF
+set firewall family inet filter PROTECT_RE term ALLOW_OSPF then accept
+set firewall family inet filter PROTECT_RE term ALLOW_BGP from source-prefix-list BGP_PEERS_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_BGP from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_BGP from destination-port bgp
+set firewall family inet filter PROTECT_RE term ALLOW_BGP then count PROTECT_RE_ALLOW_BGP
+set firewall family inet filter PROTECT_RE term ALLOW_BGP then accept
+set firewall family inet filter PROTECT_RE term ALLOW_SSH from source-prefix-list COMPANY_INTERNAL
+set firewall family inet filter PROTECT_RE term ALLOW_SSH from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_SSH from destination-port ssh
+set firewall family inet filter PROTECT_RE term ALLOW_SSH then count PROTECT_RE_ALLOW_SSH
+set firewall family inet filter PROTECT_RE term ALLOW_SSH then syslog
+set firewall family inet filter PROTECT_RE term ALLOW_SSH then accept
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF from source-prefix-list COMPANY_INTERNAL
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF from destination-port 830
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF then count PROTECT_RE_ALLOW_NETCONF
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF then syslog
+set firewall family inet filter PROTECT_RE term ALLOW_NETCONF then accept
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP from source-prefix-list SNMP_SERVERS_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP from destination-port snmp
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP then policer POLICE_10M
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP then count PROTECT_RE_ALLOW_SNMP
+set firewall family inet filter PROTECT_RE term ALLOW_SNMP then accept
+set firewall family inet filter PROTECT_RE term ALLOW_NTP from source-prefix-list LOCALHOST_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_NTP from source-prefix-list NTP_SERVERS_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_NTP from source-prefix-list NTP_SOURCE_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_NTP from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_NTP from destination-port ntp
+set firewall family inet filter PROTECT_RE term ALLOW_NTP then policer POLICE_32K
+set firewall family inet filter PROTECT_RE term ALLOW_NTP then count PROTECT_RE_ALLOW_NTP
+set firewall family inet filter PROTECT_RE term ALLOW_NTP then accept
+set firewall family inet filter PROTECT_RE term ALLOW_DNS from source-prefix-list DNS_SERVERS_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_DNS from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_DNS from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_DNS from destination-port domain
+set firewall family inet filter PROTECT_RE term ALLOW_DNS then policer POLICE_32K
+set firewall family inet filter PROTECT_RE term ALLOW_DNS then count PROTECT_RE_ALLOW_DNS
+set firewall family inet filter PROTECT_RE term ALLOW_DNS then syslog
+set firewall family inet filter PROTECT_RE term ALLOW_DNS then accept
+set firewall family inet filter PROTECT_RE term ALLOW_VRRP from destination-prefix-list VRRP_ROUTERS
+set firewall family inet filter PROTECT_RE term ALLOW_VRRP from destination-prefix-list LOCALHOST_DYNAMIC
+set firewall family inet filter PROTECT_RE term ALLOW_VRRP from protocol vrrp
+set firewall family inet filter PROTECT_RE term ALLOW_VRRP from protocol ah
+set firewall family inet filter PROTECT_RE term ALLOW_VRRP then count PROTECT_RE_ALLOW_VRRP
+set firewall family inet filter PROTECT_RE term ALLOW_VRRP then accept
+set firewall family inet filter PROTECT_RE term ALLOW_BFD from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_BFD from destination-port 3784
+set firewall family inet filter PROTECT_RE term ALLOW_BFD from destination-port 4784
+set firewall family inet filter PROTECT_RE term ALLOW_BFD then count PROTECT_RE_ALLOW_BFD
+set firewall family inet filter PROTECT_RE term ALLOW_BFD then accept
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED from protocol tcp
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED from tcp-established
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then policer POLICE_10M
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then count PROTECT_RE_TCP_ESTABLISHED
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then syslog
+set firewall family inet filter PROTECT_RE term TCP_ESTABLISHED then accept
+set firewall family inet filter PROTECT_RE term ALLOW_ICCP from source-prefix-list ICCP_PEERS
+set firewall family inet filter PROTECT_RE term ALLOW_ICCP from protocol tcp
+set firewall family inet filter PROTECT_RE term ALLOW_ICCP from destination-port 33012
+set firewall family inet filter PROTECT_RE term ALLOW_ICCP then count PROTECT_RE_ALLOW_ICCP
+set firewall family inet filter PROTECT_RE term ALLOW_ICCP then accept
+set firewall family inet filter PROTECT_RE term ALLOW_ICCP_BLD from source-prefix-list ICCP_PEERS_BLD
+set firewall family inet filter PROTECT_RE term ALLOW_ICCP_BLD from protocol udp
+set firewall family inet filter PROTECT_RE term ALLOW_ICCP_BLD from destination-port 50015
+set firewall family inet filter PROTECT_RE term ALLOW_ICCP_BLD then count PROTECT_RE_ALLOW_ICCP_BLD
+set firewall family inet filter PROTECT_RE term ALLOW_ICCP_BLD then accept
+set firewall family inet filter PROTECT_RE term DEFAULT_DENY then count PROTECT_RE_DEFAULT_DENY
+set firewall family inet filter PROTECT_RE term DEFAULT_DENY then log
+set firewall family inet filter PROTECT_RE term DEFAULT_DENY then syslog
+set firewall family inet filter PROTECT_RE term DEFAULT_DENY then discard
+set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT from source-prefix-list COMPANY_INTERNAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT from next-header tcp
+set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT from tcp-flags "(syn & !ack) | fin | rst"
+set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT then policer POLICE_100K
+set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT then count PROTECT_RE_V6_SYNFLOOD_PROTECT
+set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT then syslog
+set firewall family inet6 filter PROTECT_RE_V6 term SYNFLOOD_PROTECT then accept
+set firewall family inet6 filter PROTECT_RE_V6 term DENY_ICMP_FRAGS from next-header icmp6
+set firewall family inet6 filter PROTECT_RE_V6 term DENY_ICMP_FRAGS from next-header fragment
+set firewall family inet6 filter PROTECT_RE_V6 term DENY_ICMP_FRAGS then count PROTECT_RE_V6_DENY_ICMP_FRAGS
+set firewall family inet6 filter PROTECT_RE_V6 term DENY_ICMP_FRAGS then log
+set firewall family inet6 filter PROTECT_RE_V6 term DENY_ICMP_FRAGS then discard
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICMP from next-header icmp6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICMP then policer POLICE_1M
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICMP then count PROTECT_RE_V6_ALLOW_ICMP
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICMP then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TRACEROUTE from next-header udp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TRACEROUTE from destination-port 33434-33523
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TRACEROUTE then policer POLICE_1M
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TRACEROUTE then count PROTECT_RE_V6_ALLOW_TRACEROUTE
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_TRACEROUTE then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_OSPF from destination-prefix-list LOCALHOST_DYNAMIC_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_OSPF from destination-prefix-list OSPF_ROUTERS_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_OSPF from destination-prefix-list LINK_LOCAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_OSPF from next-header ospf
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_OSPF then count PROTECT_RE_V6_ALLOW_OSPF
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_OSPF then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from source-prefix-list BGP_PEERS_DYNAMIC_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from source-prefix-list LINK_LOCAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from next-header tcp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP from destination-port bgp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP then count PROTECT_RE_V6_ALLOW_BGP
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BGP then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from source-prefix-list COMPANY_INTERNAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from source-prefix-list LINK_LOCAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from next-header tcp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH from destination-port ssh
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH then count PROTECT_RE_V6_ALLOW_SSH
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH then syslog
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SSH then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from source-prefix-list COMPANY_INTERNAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from source-prefix-list LINK_LOCAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from next-header tcp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF from destination-port 830
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF then count PROTECT_RE_V6_ALLOW_NETCONF
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF then syslog
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NETCONF then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from source-prefix-list SNMP_SERVERS_DYNAMIC_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from source-prefix-list LINK_LOCAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from next-header udp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP from destination-port snmp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP then policer POLICE_10M
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP then count PROTECT_RE_V6_ALLOW_SNMP
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_SNMP then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from source-prefix-list LOCALHOST_DYNAMIC_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from source-prefix-list NTP_SERVERS_DYNAMIC_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from source-prefix-list NTP_SOURCE_DYNAMIC_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from source-prefix-list LINK_LOCAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from next-header udp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP from destination-port ntp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP then policer POLICE_32K
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP then count PROTECT_RE_V6_ALLOW_NTP
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_NTP then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from source-prefix-list DNS_SERVERS_DYNAMIC_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from source-prefix-list LINK_LOCAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from next-header udp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from next-header tcp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS from destination-port domain
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then policer POLICE_32K
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then count PROTECT_RE_V6_ALLOW_DNS
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then syslog
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_DNS then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP from destination-prefix-list VRRP_ROUTERS_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP from destination-prefix-list LOCALHOST_DYNAMIC_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP from destination-prefix-list LINK_LOCAL_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP from next-header vrrp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP from next-header ah
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP then count PROTECT_RE_V6_ALLOW_VRRP
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_VRRP then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BFD from next-header udp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BFD from destination-port 3784
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BFD from destination-port 4784
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BFD then count PROTECT_RE_V6_ALLOW_BFD
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_BFD then accept
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED from next-header tcp
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED from tcp-established
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then policer POLICE_10M
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then count PROTECT_RE_V6_TCP_ESTABLISHED
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then syslog
+set firewall family inet6 filter PROTECT_RE_V6 term TCP_ESTABLISHED then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICCP_V6 from source-prefix-list ICCP_PEERS_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICCP_V6 from next-header tcp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICCP_V6 from destination-port 33012
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICCP_V6 then count PROTECT_RE_V6_ALLOW_ICCP_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICCP_V6 then accept
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICCP_BLD_V6 from source-prefix-list ICCP_PEERS_BLD_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICCP_BLD_V6 from next-header udp
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICCP_BLD_V6 from destination-port 50015
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICCP_BLD_V6 then count PROTECT_RE_V6_ALLOW_ICCP_BLD_V6
+set firewall family inet6 filter PROTECT_RE_V6 term ALLOW_ICCP_BLD_V6 then accept
+set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then count PROTECT_RE_V6_DEFAULT_DENY
+set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then log
+set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then syslog
+set firewall family inet6 filter PROTECT_RE_V6 term DEFAULT_DENY then discard
+set firewall policer POLICE_100K if-exceeding bandwidth-limit 100k
+set firewall policer POLICE_100K if-exceeding burst-size-limit 15k
+set firewall policer POLICE_100K then discard
+set firewall policer POLICE_10M if-exceeding bandwidth-limit 10m
+set firewall policer POLICE_10M if-exceeding burst-size-limit 625k
+set firewall policer POLICE_10M then discard
+set firewall policer POLICE_1M if-exceeding bandwidth-limit 1m
+set firewall policer POLICE_1M if-exceeding burst-size-limit 15k
+set firewall policer POLICE_1M then discard
+set firewall policer POLICE_32K if-exceeding bandwidth-limit 32k
+set firewall policer POLICE_32K if-exceeding burst-size-limit 15k
+set firewall policer POLICE_32K then discard
+
+set policy-options prefix-list BGP_PEERS_DYNAMIC apply-path "protocols bgp group <*> neighbor <*.*>"
+set policy-options prefix-list BGP_PEERS_DYNAMIC_V6 apply-path "protocols bgp group <*> neighbor <*:*>"
+set policy-options prefix-list NTP_SERVERS_DYNAMIC apply-path "system ntp server <*.*.*.*>"
+set policy-options prefix-list NTP_SERVERS_DYNAMIC_V6 apply-path "system ntp server <*:*:*>"
+set policy-options prefix-list SNMP_SERVERS_DYNAMIC apply-path "snmp client-list SNMP_SERVERS <*.*.*.*>"
+set policy-options prefix-list SNMP_SERVERS_DYNAMIC_V6 apply-path "snmp community <*> clients <*:*:*>"
+set policy-options prefix-list LOCALHOST_DYNAMIC apply-path "interfaces lo0 unit <*> family inet address <*.*.*.*>"
+set policy-options prefix-list LOCALHOST_DYNAMIC_V6 apply-path "interfaces lo0 unit <*> family inet6 address <*:*:*>"
+set policy-options prefix-list TACACS_SERVERS_DYNAMIC apply-path "system tacplus-server <*.*.*.*>"
+set policy-options prefix-list TACACS_SERVERS_DYNAMIC_V6 apply-path "system tacplus-server <*:*:*>"
+set policy-options prefix-list NTP_SOURCE_DYNAMIC apply-path "system ntp source-address <*.*.*.*>"
+set policy-options prefix-list NTP_SOURCE_DYNAMIC_V6 apply-path "system ntp source-address <*:*:*>"
+set policy-options prefix-list BMP_SERVERS_DYNAMIC apply-path "routing-options bmp station-address <*.*.*.*>"
+set policy-options prefix-list BMP_SERVERS_DYNAMIC_V6 apply-path "routing-options bmp station-address <*:*:*>"
+set policy-options prefix-list DNS_SERVERS_DYNAMIC apply-path "system name-server <*.*.*.*>"
+set policy-options prefix-list DNS_SERVERS_DYNAMIC_V6 apply-path "system name-server <*:*:*>"
+set policy-options prefix-list FLOW_SERVERS_DYNAMIC apply-path "forwarding-options sampling instance <*> family inet output flow-server <*.*.*.*>"
+set policy-options prefix-list FLOW_SERVERS_DYNAMIC_V6 apply-path "forwarding-options sampling instance <*> family inet6 output flow-server <*:*:*>"
+set policy-options prefix-list VRRP_ROUTERS 224.0.0.18/32
+set policy-options prefix-list OSPF_ROUTERS 224.0.0.5/32
+set policy-options prefix-list OSPF_ROUTERS 224.0.0.6/32
+set policy-options prefix-list OSPF_ROUTERS_V6 ff02::5/128
+set policy-options prefix-list OSPF_ROUTERS_V6 ff02::6/128
+set policy-options prefix-list VRRP_ROUTERS_V6 ff02:0:0:0:0:0:0:12/128
+set policy-options prefix-list LOCAL_INTERFACES apply-path "interfaces <*> unit <*> family inet address <*.*.*.*>"
+set policy-options prefix-list LOCAL_INTERFACES_V6 apply-path "interfaces <*> unit <*> family inet6 address <*:*:*>"
+set policy-options prefix-list COMPANY_INTERNAL 10.0.0.0/8
+set policy-options prefix-list COMPANY_INTERNAL 172.16.0.0/12
+set policy-options prefix-list COMPANY_INTERNAL 192.168.0.0/16
+set policy-options prefix-list COMPANY_INTERNAL_V6 2001:db8:2::/48
+set policy-options prefix-list LINK_LOCAL_V6 fe80::/10
+set policy-options prefix-list ICCP_PEERS apply-path "protocols iccp peer <*.*.*.*>"
+set policy-options prefix-list ICCP_PEERS_V6 apply-path "protocols iccp peer <*:*:*>"
+set policy-options prefix-list ICCP_PEERS_BLD apply-path "protocols iccp peer <*.*.*.*> backup-liveness-detection backup-peer-ip <*.*.*.*>"
+set policy-options prefix-list ICCP_PEERS_BLD_V6 apply-path "protocols iccp peer <*:*:*> backup-liveness-detection backup-peer-ip <*:*:*>"
