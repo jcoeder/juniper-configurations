@@ -1,4 +1,15 @@
 #Policy prevents BGP from generating an aggregate route.  Useful for annouuncing a smaller subnet from a different ASN.
+set policy-options policy-statement AGGREGATE_FROM_DIRECT_STATIC_OSPF term FROM_DIRECT from protocol direct
+set policy-options policy-statement AGGREGATE_FROM_DIRECT_STATIC_OSPF term FROM_DIRECT then accept
+set policy-options policy-statement AGGREGATE_FROM_DIRECT_STATIC_OSPF term FROM_STATIC from protocol static
+set policy-options policy-statement AGGREGATE_FROM_DIRECT_STATIC_OSPF term FROM_STATIC then accept
+set policy-options policy-statement AGGREGATE_FROM_DIRECT_STATIC_OSPF term FROM_OSPF from protocol ospf
+set policy-options policy-statement AGGREGATE_FROM_DIRECT_STATIC_OSPF term FROM_OSPF then accept
+set policy-options policy-statement AGGREGATE_FROM_DIRECT_STATIC_OSPF term FROM_OSPF3 from protocol ospf3
+set policy-options policy-statement AGGREGATE_FROM_DIRECT_STATIC_OSPF term FROM_OSPF3 then accept
+set policy-options policy-statement AGGREGATE_FROM_DIRECT_STATIC_OSPF term DEFAULT_REJECT then reject
+
+#Will still take bgp routes into consideration for aggregate generation
 set policy-options policy-statement aggregate-from-direct-static-ospf from protocol direct
 set policy-options policy-statement aggregate-from-direct-static-ospf from protocol static
 set policy-options policy-statement aggregate-from-direct-static-ospf from protocol ospf
