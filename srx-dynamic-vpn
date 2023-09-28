@@ -11,7 +11,7 @@ set security ike proposal dyn-vpn-ike-pro authentication-algorithm sha1
 set security ike proposal dyn-vpn-ike-pro encryption-algorithm 3des-cbc
 set security ike proposal dyn-vpn-ike-pro lifetime-seconds 1200
 
-et security ike policy dyn-vpn-ike-pol mode aggressive
+set security ike policy dyn-vpn-ike-pol mode aggressive
 set security ike policy dyn-vpn-ike-pol proposals dyn-vpn-ike-pro
 set security ike policy dyn-vpn-ike-pol pre-shared-key ascii-text "$9$123456789101112131415"
 
